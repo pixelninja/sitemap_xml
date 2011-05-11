@@ -37,11 +37,16 @@
 				
 				// Set priority level
 				foreach($page['types'] as $type) {
-					if ($type == 'high') $page['priority'] = 'high';
-					elseif ($type == 'high-mid') $page['priority'] = 'high-mid';
-					elseif ($type == 'mid') $page['priority'] = 'mid';
-					elseif ($type == 'mid-low') $page['priority'] = 'mid-low';
-					elseif ($type == 'low') $page['priority'] = 'low';
+					if ($type == '1.00') 	 $page['priority'] = '1.00';
+					elseif ($type == '0.90') $page['priority'] = '0.90';
+					elseif ($type == '0.80') $page['priority'] = '0.80';
+					elseif ($type == '0.70') $page['priority'] = '0.70';
+					elseif ($type == '0.60') $page['priority'] = '0.60';
+					elseif ($type == '0.50') $page['priority'] = '0.50';
+					elseif ($type == '0.40') $page['priority'] = '0.40';
+					elseif ($type == '0.30') $page['priority'] = '0.30';
+					elseif ($type == '0.20') $page['priority'] = '0.20';
+					elseif ($type == '0.10') $page['priority'] = '0.10';
 				}
 				
 				$this->_pages[] = $page;
@@ -73,16 +78,21 @@
 			foreach($this->_pages as $page) {
 				if ($page['is_primary'] == true) {
 					$html  = "\n".'	&lt;url&gt;'."\n";
-					$html .= '	  &lt;loc&gt;'.URL.$page['url'].'&lt;/loc&gt;'."\n";
+					$html .= '	  &lt;loc&gt;'.URL.$page['url'].'/&lt;/loc&gt;'."\n";
 					$html .= '	  &lt;lastmod&gt;'.$this->type_lastmod[0].'&lt;/lastmod&gt;'."\n";
 					$html .= '	  &lt;changefreq&gt;'.$this->type_changefreq[0].'&lt;/changefreq&gt;'."\n";
 					
-					if($page['priority'] == 'high') $html .= '	  &lt;priority&gt;1.00&lt;/priority&gt;'."\n";
-					elseif($page['priority'] == 'high-mid') $html .= '	  &lt;priority&gt;0.84&lt;/priority&gt;'."\n";
-					elseif($page['priority'] == 'mid') $html .= '	  &lt;priority&gt;0.64&lt;/priority&gt;'."\n";
-					elseif($page['priority'] == 'mid-low') $html .= '	  &lt;priority&gt;0.44&lt;/priority&gt;'."\n";
-					elseif($page['priority'] == 'low') $html .= '	  &lt;priority&gt;0.24&lt;/priority&gt;'."\n";
-					else $html .= '	  &lt;priority&gt;0.84&lt;/priority&gt;'."\n";
+					if($page['priority'] == '1.00') 	$html .= '	  &lt;priority&gt;1.00&lt;/priority&gt;'."\n";
+					elseif($page['priority'] == '0.90') $html .= '	  &lt;priority&gt;0.90&lt;/priority&gt;'."\n";
+					elseif($page['priority'] == '0.80') $html .= '	  &lt;priority&gt;0.80&lt;/priority&gt;'."\n";
+					elseif($page['priority'] == '0.70') $html .= '	  &lt;priority&gt;0.70&lt;/priority&gt;'."\n";
+					elseif($page['priority'] == '0.60') $html .= '	  &lt;priority&gt;0.60&lt;/priority&gt;'."\n";
+					elseif($page['priority'] == '0.50') $html .= '	  &lt;priority&gt;0.50&lt;/priority&gt;'."\n";
+					elseif($page['priority'] == '0.40') $html .= '	  &lt;priority&gt;0.40&lt;/priority&gt;'."\n";
+					elseif($page['priority'] == '0.30') $html .= '	  &lt;priority&gt;0.30&lt;/priority&gt;'."\n";
+					elseif($page['priority'] == '0.20') $html .= '	  &lt;priority&gt;0.20&lt;/priority&gt;'."\n";
+					elseif($page['priority'] == '0.10') $html .= '	  &lt;priority&gt;0.10&lt;/priority&gt;'."\n";
+					else $html .= '	  &lt;priority&gt;0.50&lt;/priority&gt;'."\n";
 					
 					$html .= '	&lt;/url&gt;';
 					echo $html;

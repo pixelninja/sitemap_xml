@@ -18,15 +18,22 @@ By default it assumes the index/home page will have the type "index" and global 
 
 If you use a different convention in your Page Type field then you can change these in the System > Preferences page. 
 
-Also needed for correct output is the priority of each page. By default it will return &lt;priority&gt;0.84&lt;/priority&gt;, but you can specify in the System > Preferences page.
+Also needed for correct output is the priority of each page, which is added to the pages Page Type field. By default it will return `<priority>0.5</priority>`.
 
 The options are:
-**high** - this will return `<priority>1.00</priority>`
-**high-mid** - this will return &lt;priority&gt;0.84&lt;/priority&gt; 
-**mid** - this will return &lt;priority&gt;0.64&lt;/priority&gt; 
-**mid-low** - this will return &lt;priority&gt;0.44&lt;/priority&gt; 
-**low** - this will return &lt;priority&gt;0.24&lt;/priority&gt; 
+- `1.00` - will return `<priority>1.00</priority>`
+- `0.90` - will return `<priority>0.90</priority>` 
+- `0.80` - will return `<priority>0.80</priority>` 
+- `0.70` - will return `<priority>0.70</priority>` 
+- `0.60` - will return `<priority>0.60</priority>` 
+- `0.50` - will return `<priority>0.50</priority>` 
+- `0.40` - will return `<priority>0.40</priority>` 
+- `0.30` - will return `<priority>0.30</priority>` 
+- `0.20` - will return `<priority>0.20</priority>` 
+- `0.10` - will return `<priority>0.10</priority>` 
 
 The index/home page will automatically be set to 1.00.
 
-You can also specify the modification date and change frequency in the System > Preferences page. These are set to the current date/time at installation and "monthly" respectively.
+You can also specify the modification date and change frequency in the System > Preferences page. These are set as current date/time at installation and "monthly" respectively.
+
+Once done, navigate to the Sitemap XML page, Blueprints > Sitemap XML, and copy and paste the generated code into an xml file.
