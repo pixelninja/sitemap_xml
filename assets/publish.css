@@ -41,11 +41,32 @@ div.sitemap{
 	float: left;
 	margin: 0 0 40px;
 	width: 100%;
+	position: relative;
+}
+
+a.raw{
+	position: absolute;
+	top: 5%;
+	left: 75%;
+
+	display: block ;
+	color: #000;
+	padding: 4px 5px;
+	font-family: "Lucida Grande",Verdana,sans-serif;
+	font-size: 11px;
+	border: 1px solid #E6E6E5;
+	background: #f5f5f4;
+	border-radius: 4px;
+	text-decoration: none;
+}
+a.raw:hover{
+	background: #ccc;
 }
 
 code, pre{
 	float: left;
 	width: 75%;
+	min-width: 890px;
 	padding: 30px;
 	
 	border: 1px solid #E6E6E5;

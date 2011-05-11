@@ -17,6 +17,11 @@
 			$body = new XMLElement('body');
 			$sitemap = new XMLElement('div', null, array('class' => 'sitemap'));
 			$pre = new XMLElement('pre');
+			$raw = new XMLElement('a', 'View raw', array(
+												   	  'class' => 'raw',
+												   	  'rel' => 'external',
+												   	  'href' => URL.'/sitemap.xml'
+												   ));
 						
 			// add doctype
 			$html->setDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">');
@@ -45,6 +50,7 @@
 			$html->appendChild($head);
 			$html->appendChild($body);
 			$body->appendChild($sitemap);
+			$sitemap->appendChild($raw);
 			$sitemap->appendChild($pre);
 			
 			// echo content
