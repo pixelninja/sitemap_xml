@@ -58,17 +58,15 @@
 			$html .= '  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'."\n";
 			$html .= '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'."\n";
 			$html .= '  xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"&gt;'."\n\n";
-			echo $html;
 			
 			foreach($this->_pages as $page) {
 				if ($page['is_home'] == true) {
-					$html  = '	&lt;url&gt;'."\n";
+					$html .= '	&lt;url&gt;'."\n";
 					$html .= '	  &lt;loc&gt;'.URL.$page['url'].'/&lt;/loc&gt;'."\n";
 					$html .= '	  &lt;lastmod&gt;'.$this->type_lastmod[0].'&lt;/lastmod&gt;'."\n";
 					$html .= '	  &lt;changefreq&gt;'.$this->type_changefreq[0].'&lt;/changefreq&gt;'."\n";
 					$html .= '	  &lt;priority&gt;1.00&lt;/priority&gt;'."\n";
 					$html .= '	&lt;/url&gt;';
-					echo $html;
 				}
 			}
 			
@@ -76,7 +74,7 @@
 			$primary_pages = 0;
 			foreach($this->_pages as $page) {
 				if ($page['is_global'] == true) {
-					$html  = "\n".'	&lt;url&gt;'."\n";
+					$html .= "\n".'	&lt;url&gt;'."\n";
 					$html .= '	  &lt;loc&gt;'.URL.$page['url'].'/&lt;/loc&gt;'."\n";
 					$html .= '	  &lt;lastmod&gt;'.$this->type_lastmod[0].'&lt;/lastmod&gt;'."\n";
 					$html .= '	  &lt;changefreq&gt;'.$this->type_changefreq[0].'&lt;/changefreq&gt;'."\n";
@@ -94,12 +92,23 @@
 					else $html .= '	  &lt;priority&gt;0.50&lt;/priority&gt;'."\n";
 					
 					$html .= '	&lt;/url&gt;';
-					echo $html;
 				}
 			}
 			
-			$html  = "\n\n".'&lt;/urlset&gt;';
+			$html .= "\n\n".'&lt;/urlset&gt;';
 			echo $html;
+			
+			# Path to our file
+			$custom_file = getcwd() . '/sitemap.xml';
+			# Open the file and reset it, to recieve the new code
+			$open_file = fopen($custom_file, 'w');
+			
+			$valid_xml = str_replace('&lt;', '<', str_replace('&gt;', '>', $html));
+			
+			# Write it, then close
+			fwrite($open_file, $valid_xml);
+			fclose($open_file);
+							
 			die;
 		}
 	}

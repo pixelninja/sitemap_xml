@@ -26,7 +26,7 @@
 				'http-equiv' => 'Content-Type', 
 				'context' => 'text/html; charset=utf-8'
 			)));
-			$head->appendChild(new XMLElement('title', 'Site Map XML — ' . Symphony::Configuration()->get('sitename', 'general')));
+			$head->appendChild(new XMLElement('title', 'Sitemap XML — ' . Symphony::Configuration()->get('sitename', 'general')));
 			$head->appendChild(new XMLElement('link', null, array(
 				'rel' => 'stylesheet',
 				'type' => 'text/css',
@@ -38,7 +38,7 @@
 			
 			// add headings
 			$sitemap->appendChild(new XMLElement('h1', 'Sitemap XML <span>' . Symphony::Configuration()->get('sitename', 'general') . '</span>'));
-			$sitemap->appendChild(new XMLElement('h2', 'Site Map, ' . date('d F Y', time())));
+			$sitemap->appendChild(new XMLElement('h2', 'Sitemap XML, ' . date('d F Y', time())));
 			$sitemap->appendChild(new XMLElement('h6', '<a href="'.URL.'"></a>'));
 			
 			// layer elements
@@ -50,7 +50,7 @@
 			// echo content
 			header('content-type: text/html');
 			echo $html->generate(true);
-			
+						
 			//stop the loading of Symphony core
 			die;
 		}
