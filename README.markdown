@@ -21,6 +21,7 @@ If you use a different convention in your Page Type field then you can change th
 Also needed for correct output is the priority of each page, which is added to the pages Page Type field. By default it will return `<priority>0.5</priority>`.
 
 The options are:
+
 - `1.00` - will return `<priority>1.00</priority>`
 - `0.90` - will return `<priority>0.90</priority>` 
 - `0.80` - will return `<priority>0.80</priority>` 
