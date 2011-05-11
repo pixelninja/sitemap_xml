@@ -33,6 +33,10 @@ h2{
 	margin: 0 0 20px;
 }
 
+h6{
+	display: none;
+}
+
 div.sitemap{
 	float: left;
 	margin: 0 0 40px;

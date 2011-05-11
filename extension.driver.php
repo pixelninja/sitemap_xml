@@ -1,12 +1,12 @@
 <?php
 
-	Class extension_generate_sitemap extends Extension{
+	Class extension_sitemap_xml extends Extension{
 	
 		public function about(){
 			return array(
-				'name' => 'Generate Sitemap',
+				'name' => 'Sitemap XML',
 				'version' => '1.0',
-				'release-date' => '2011-05-10',
+				'release-date' => '2011-05-11',
 				'author' => array(
 				 		'name' => 'Phill Gray',
 						'email' => 'phill@randb.com.au'
@@ -18,8 +18,8 @@
 			return array(
 				array(
 					'location' => 'Blueprints',
-					'name'	=> 'Generate Sitemap',
-					'link'	=> '/xml-output/',
+					'name'	=> 'Sitemap XML',
+					'link'	=> '/xml/',
 				),
 			);
 		}
@@ -35,17 +35,17 @@
 		}
 		
 		public function install() {
-			if (!Symphony::Configuration()->get('primary_type', 'generate_sitemap')) {
-				Symphony::Configuration()->set('index_type', 'index', 'generate_sitemap');
-				Symphony::Configuration()->set('global', 'sitemap', 'generate_sitemap');
-				Symphony::Configuration()->set('lastmod', date('c', time()), 'generate_sitemap');
-				Symphony::Configuration()->set('changefreq', 'monthly', 'generate_sitemap');
+			if (!Symphony::Configuration()->get('primary_type', 'sitemap_xml')) {
+				Symphony::Configuration()->set('index_type', 'index', 'sitemap_xml');
+				Symphony::Configuration()->set('global', 'sitemap', 'sitemap_xml');
+				Symphony::Configuration()->set('lastmod', date('c', time()), 'sitemap_xml');
+				Symphony::Configuration()->set('changefreq', 'monthly', 'sitemap_xml');
 			}
 			return Administration::instance()->saveConfig();
 		}
 		
 		public function uninstall() {
-			Symphony::Configuration()->remove('generate_sitemap');
+			Symphony::Configuration()->remove('sitemap_xml');
 			return Administration::instance()->saveConfig();
 		}
 		
@@ -53,13 +53,13 @@
 			
 			$group = new XMLElement('fieldset');
 			$group->setAttribute('class', 'settings');
-			$group->appendChild(new XMLElement('legend', 'Generate Sitemap'));
+			$group->appendChild(new XMLElement('legend', 'Sitemap XML'));
 
 			$label = Widget::Label('Home page type');
 			$label->appendChild(
 				Widget::Input(
-					'settings[generate_sitemap][index_type]',
-					General::Sanitize(Symphony::Configuration()->get('index_type', 'generate_sitemap'))
+					'settings[sitemap_xml][index_type]',
+					General::Sanitize(Symphony::Configuration()->get('index_type', 'sitemap_xml'))
 				)
 			);
 			$group->appendChild($label);
@@ -67,8 +67,8 @@
 			$label = Widget::Label('Global page type');
 			$label->appendChild(
 				Widget::Input(
-					'settings[generate_sitemap][global]',
-					General::Sanitize(Symphony::Configuration()->get('global', 'generate_sitemap'))
+					'settings[sitemap_xml][global]',
+					General::Sanitize(Symphony::Configuration()->get('global', 'sitemap_xml'))
 				)
 			);
 			$group->appendChild($label);
@@ -76,8 +76,8 @@
 			$label = Widget::Label('Modification date of XML');
 			$label->appendChild(
 				Widget::Input(
-					'settings[generate_sitemap][lastmod]',
-					General::Sanitize(Symphony::Configuration()->get('lastmod', 'generate_sitemap'))
+					'settings[sitemap_xml][lastmod]',
+					General::Sanitize(Symphony::Configuration()->get('lastmod', 'sitemap_xml'))
 				)
 			);
 			$group->appendChild($label);
@@ -85,8 +85,8 @@
 			$label = Widget::Label('Change frequency of XML');
 			$label->appendChild(
 				Widget::Input(
-					'settings[generate_sitemap][changefreq]',
-					General::Sanitize(Symphony::Configuration()->get('changefreq', 'generate_sitemap'))
+					'settings[sitemap_xml][changefreq]',
+					General::Sanitize(Symphony::Configuration()->get('changefreq', 'sitemap_xml'))
 				)
 			);
 			$group->appendChild($label);
