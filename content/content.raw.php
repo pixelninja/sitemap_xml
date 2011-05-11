@@ -8,7 +8,7 @@
 		public $_pages = array();
 		
 		private $type_index = null;
-		private $type_primary = null;
+		private $type_global = null;
 		private $type_utility = null;
 		private $type_exclude = null;
 		
@@ -18,7 +18,7 @@
 					
 			// get values from config: remove spaces, remove any trailing commas and split into an array
 			$this->type_index = explode(',', trim(preg_replace('/ /', '', Symphony::Configuration()->get('index_type', 'sitemap_xml')), ','));
-			$this->type_primary = explode(',', trim(preg_replace('/ /', '', Symphony::Configuration()->get('global', 'sitemap_xml')), ','));
+			$this->type_global = explode(',', trim(preg_replace('/ /', '', Symphony::Configuration()->get('global', 'sitemap_xml')), ','));
 			$this->type_lastmod = explode(',', trim(preg_replace('/ /', '', Symphony::Configuration()->get('lastmod', 'sitemap_xml')), ','));
 			$this->type_changefreq = explode(',', trim(preg_replace('/ /', '', Symphony::Configuration()->get('changefreq', 'sitemap_xml')), ','));			
 			
@@ -27,13 +27,12 @@
 				$page_types = Symphony::Database()->fetchCol('type', "SELECT `type` FROM `tbl_pages_types` WHERE page_id = '".$page['id']."' ORDER BY `type` ASC");
 				
 				$page['url'] = '/' . Administration::instance()->resolvePagePath($page['id']);
-				$page['edit-url'] = Administration::instance()->getCurrentPageURL() . 'edit/' . $page['id'] . '/';
 				$page['types'] = $page_types;
 				
 				if (count(array_intersect($page['types'], $this->type_exclude)) > 0) continue;
 				
 				$page['is_home'] = (count(array_intersect($page['types'], $this->type_index))) ? true : false;				
-				$page['is_primary'] = (count(array_intersect($page['types'], $this->type_primary)) > 0) ? true : false;
+				$page['is_global'] = (count(array_intersect($page['types'], $this->type_global)) > 0) ? true : false;
 				
 				// Set priority level
 				foreach($page['types'] as $type) {
@@ -76,7 +75,7 @@
 			// append top level pages
 			$primary_pages = 0;
 			foreach($this->_pages as $page) {
-				if ($page['is_primary'] == true) {
+				if ($page['is_global'] == true) {
 					$html  = "\n".'	&lt;url&gt;'."\n";
 					$html .= '	  &lt;loc&gt;'.URL.$page['url'].'/&lt;/loc&gt;'."\n";
 					$html .= '	  &lt;lastmod&gt;'.$this->type_lastmod[0].'&lt;/lastmod&gt;'."\n";

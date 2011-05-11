@@ -7,11 +7,6 @@
 		const SITEMAP_LEVELS = 3;
 		public $_pages = array();
 		
-		private $type_index = null;
-		private $type_primary = null;
-		private $type_lastmod = null;
-		private $type_changefreq = null;
-		
 		function view(&$wrapper) {
 			// fetch all pages
 			$pages = Symphony::Database()->fetch("SELECT p.* FROM `tbl_pages` AS p ORDER BY p.sortorder ASC");
