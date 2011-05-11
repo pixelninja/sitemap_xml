@@ -21,7 +21,7 @@ If you use a different convention in your Page Type field then you can change th
 Also needed for correct output is the priority of each page. By default it will return &lt;priority&gt;0.84&lt;/priority&gt;, but you can specify in the System > Preferences page.
 
 The options are:
-**high** - this will return <priority>1.00</priority>
+**high** - this will return `<priority>1.00</priority>`
 **high-mid** - this will return &lt;priority&gt;0.84&lt;/priority&gt; 
 **mid** - this will return &lt;priority&gt;0.64&lt;/priority&gt; 
 **mid-low** - this will return &lt;priority&gt;0.44&lt;/priority&gt; 
