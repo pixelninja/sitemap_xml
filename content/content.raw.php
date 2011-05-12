@@ -4,13 +4,12 @@
 	
 	Class ContentExtensionSitemap_XmlRaw extends AdministrationPage{
 		
-		const SITEMAP_LEVELS = 3;
 		public $_pages = array();
 		
 		private $type_index = null;
 		private $type_global = null;
-		private $type_utility = null;
-		private $type_exclude = null;
+		private $type_lastmod = null;
+		private $type_changefreq = null;
 		
 		function view(){
 			// fetch all pages
@@ -28,8 +27,6 @@
 				
 				$page['url'] = '/' . Administration::instance()->resolvePagePath($page['id']);
 				$page['types'] = $page_types;
-				
-				if (count(array_intersect($page['types'], $this->type_exclude)) > 0) continue;
 				
 				$page['is_home'] = (count(array_intersect($page['types'], $this->type_index))) ? true : false;				
 				$page['is_global'] = (count(array_intersect($page['types'], $this->type_global)) > 0) ? true : false;
@@ -59,6 +56,7 @@
 			$html .= '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'."\n";
 			$html .= '  xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"&gt;'."\n\n";
 			
+			// Display the home/index page
 			foreach($this->_pages as $page) {
 				if ($page['is_home'] == true) {
 					$html .= '	&lt;url&gt;'."\n";
@@ -70,7 +68,7 @@
 				}
 			}
 			
-			// append top level pages
+			// Display all other pages
 			$primary_pages = 0;
 			foreach($this->_pages as $page) {
 				if ($page['is_global'] == true) {
@@ -98,17 +96,18 @@
 			$html .= "\n\n".'&lt;/urlset&gt;';
 			echo $html;
 			
-			# Path to our file
+			// File path
 			$custom_file = getcwd() . '/sitemap.xml';
 			# Open the file and reset it, to recieve the new code
 			$open_file = fopen($custom_file, 'w');
-			
+			// Replace html entities with ASCII 
 			$valid_xml = str_replace('&lt;', '<', str_replace('&gt;', '>', $html));
 			
-			# Write it, then close
+			# Write xml to file, then close
 			fwrite($open_file, $valid_xml);
 			fclose($open_file);
-							
+			
+			//stop the loading of Symphony core
 			die;
 		}
 	}

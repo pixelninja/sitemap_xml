@@ -1,9 +1,9 @@
-# Sitemap
+# Sitemap XML
 
 - Version: 1.0
 - Author: Phill Gray
 - Build Date: 2011-05-11
-- Requirements: Symphony 2.2
+- Requirements: Symphony 2.2.1
 
 ## Installation
 
@@ -25,7 +25,7 @@ The priority options are:
 - `high` (1.00)
 - `mid`  (0.50)
 - `low`  (0.10)
-- You can also specify the numerical value, ranging from `1.00` to `0.10`. Just note that it required a leading zero and two decimal places.
+- You can also specify the numerical value, ranging from `1.00` to `0.10`. Just note that it requires a leading zero and two decimal places.
 
 The index/home page will automatically be set to 1.00.
 

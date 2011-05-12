@@ -43,7 +43,7 @@
 				Symphony::Configuration()->set('changefreq', 'monthly', 'sitemap_xml');
 			}
 			
-			//autogenerate a blank sitemap.xml
+			// Autogenerate a blank sitemap.xml
 			$fp = fopen(getcwd() . '/sitemap.xml', 'w+');
 			fclose($fp);
 			
