@@ -5,7 +5,7 @@ jQuery(document).ready(function() {
 	$('pre').load(root + '/symphony/extension/sitemap_xml/raw/');
 
 	$('a[rel=external]').live("click", function() {
-		window.open($(this).attr('href'));
+		window.open("view-source:" + $(this).attr('href'));
 		return false;
 	});
 });
