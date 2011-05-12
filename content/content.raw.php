@@ -50,14 +50,16 @@
 			
 			
 			// build the document
+			// I'm not sure if this is the best method but I needed some way of displaying the code in pre tags, hence the entities
 			$html  = '&lt;?xml version="1.0" encoding="UTF-8"?&gt;'."\n";
 			$html .= '&lt;urlset'."\n";
 			$html .= '  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'."\n";
 			$html .= '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'."\n";
 			$html .= '  xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"&gt;'."\n\n";
 			
-			// Display the home/index page
+			// iterate over each page
 			foreach($this->_pages as $page) {
+				// Display the home/index page
 				if ($page['is_home'] == true) {
 					$html .= '	&lt;url&gt;'."\n";
 					$html .= '	  &lt;loc&gt;'.URL.$page['url'].'/&lt;/loc&gt;'."\n";
@@ -66,11 +68,7 @@
 					$html .= '	  &lt;priority&gt;1.00&lt;/priority&gt;'."\n";
 					$html .= '	&lt;/url&gt;';
 				}
-			}
-			
-			// Display all other pages
-			$primary_pages = 0;
-			foreach($this->_pages as $page) {
+				// Display all other pages
 				if ($page['is_global'] == true) {
 					$html .= "\n".'	&lt;url&gt;'."\n";
 					$html .= '	  &lt;loc&gt;'.URL.$page['url'].'/&lt;/loc&gt;'."\n";

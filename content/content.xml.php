@@ -44,6 +44,7 @@
 			// add headings
 			$sitemap->appendChild(new XMLElement('h1', 'Sitemap XML <span>' . Symphony::Configuration()->get('sitename', 'general') . '</span>'));
 			$sitemap->appendChild(new XMLElement('h2', 'Sitemap XML, ' . date('d F Y', time())));
+			// hidden heading to get the root url with jquery
 			$sitemap->appendChild(new XMLElement('h6', '<a href="'.URL.'"></a>'));
 			
 			// layer elements
