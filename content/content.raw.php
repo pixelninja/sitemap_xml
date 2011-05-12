@@ -36,16 +36,16 @@
 				
 				// Set priority level
 				foreach($page['types'] as $type) {
-					if ($type == '1.00') 	 $page['priority'] = '1.00';
+					if ($type == '1.00' || $type == 'high') 	$page['priority'] = '1.00';
+					elseif ($type == '0.50' || $type == 'mid')  $page['priority'] = '0.50';
+					elseif ($type == '0.10' || $type == 'low')  $page['priority'] = '0.10';
 					elseif ($type == '0.90') $page['priority'] = '0.90';
 					elseif ($type == '0.80') $page['priority'] = '0.80';
 					elseif ($type == '0.70') $page['priority'] = '0.70';
 					elseif ($type == '0.60') $page['priority'] = '0.60';
-					elseif ($type == '0.50') $page['priority'] = '0.50';
 					elseif ($type == '0.40') $page['priority'] = '0.40';
 					elseif ($type == '0.30') $page['priority'] = '0.30';
 					elseif ($type == '0.20') $page['priority'] = '0.20';
-					elseif ($type == '0.10') $page['priority'] = '0.10';
 				}
 				
 				$this->_pages[] = $page;

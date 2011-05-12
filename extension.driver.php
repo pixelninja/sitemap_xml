@@ -38,7 +38,7 @@
 			// Add defaults to config.php
 			if (!Symphony::Configuration()->get('primary_type', 'sitemap_xml')) {
 				Symphony::Configuration()->set('index_type', 'index', 'sitemap_xml');
-				Symphony::Configuration()->set('global', 'map', 'sitemap_xml');
+				Symphony::Configuration()->set('global', 'sitemap', 'sitemap_xml');
 				Symphony::Configuration()->set('lastmod', date('c', time()), 'sitemap_xml');
 				Symphony::Configuration()->set('changefreq', 'monthly', 'sitemap_xml');
 			}
