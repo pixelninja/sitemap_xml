@@ -5,8 +5,8 @@
 		public function about(){
 			return array(
 				'name' => 'Sitemap XML',
-				'version' => '1.0',
-				'release-date' => '2011-05-11',
+				'version' => '2.0.1alpha',
+				'release-date' => '2011-06-07',
 				'author' => array(
 				 		'name' => 'Phill Gray',
 						'email' => 'phill@randb.com.au'
@@ -31,12 +31,17 @@
 					'delegate' => 'AddCustomPreferenceFieldsets',
 					'callback' => '__appendPreferences'
 				),
+				array(
+					'page' => '/backend/',
+					'delegate' => 'InitaliseAdminPageHead',
+					'callback' => 'initaliseAdminPageHead'
+				)
 			);
 		}
 		
 		public function install() {
 			// Add defaults to config.php
-			if (!Symphony::Configuration()->get('primary_type', 'sitemap_xml')) {
+			if (!Symphony::Configuration()->get('index_type', 'sitemap_xml')) {
 				Symphony::Configuration()->set('index_type', 'index', 'sitemap_xml');
 				Symphony::Configuration()->set('global', 'sitemap', 'sitemap_xml');
 				Symphony::Configuration()->set('lastmod', date('c', time()), 'sitemap_xml');
@@ -53,6 +58,15 @@
 		public function uninstall() {
 			Symphony::Configuration()->remove('sitemap_xml');
 			return Administration::instance()->saveConfig();
+		}
+		
+		public function initaliseAdminPageHead($context) {
+			$callback = Symphony::Engine()->getPageCallback();
+			
+			// Append assets
+			if($callback['driver'] == 'blueprintspages') {
+				Symphony::Engine()->Page->addScriptToHead(URL . '/extensions/sitemap_xml/assets/pages.js', 10001);
+			}
 		}
 		
 		public function __appendPreferences($context) {
