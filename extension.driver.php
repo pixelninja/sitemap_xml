@@ -70,11 +70,16 @@
 		}
 		
 		public function __appendPreferences($context) {
-			/*@group config settings*/
-			$group = new XMLElement('fieldset');
-			$group->setAttribute('class', 'settings');
-			$group->appendChild(new XMLElement('legend', 'Sitemap XML'));
-
+			/*@group Fieldset containing config settings*/
+			$fieldset = new XMLElement('fieldset');
+			$fieldset->setAttribute('class', 'settings');
+			$fieldset->appendChild(new XMLElement('legend', 'Sitemap XML'));
+			$context['wrapper']->appendChild($fieldset);
+			
+			
+			$group = new XMLElement('div');
+			$group->setAttribute('class', 'group');
+			
 			$label = Widget::Label('Home page type');
 			$label->appendChild(
 				Widget::Input(
@@ -92,6 +97,12 @@
 				)
 			);
 			$group->appendChild($label);
+			
+			$fieldset->appendChild($group);
+			
+			
+			$group = new XMLElement('div');
+			$group->setAttribute('class', 'group');
 			
 			$label = Widget::Label('Modification date of XML');
 			$label->appendChild(
@@ -111,21 +122,10 @@
 			);
 			$group->appendChild($label);
 
-			$context['wrapper']->appendChild($group);
+			$fieldset->appendChild($group);
 			/*@group end*/
 			
-			/*@group add type to pages and save*/
-			if(isset($_REQUEST['action']['add_pagetype'])){
-				$id = $_REQUEST['addtype']['page'];
-				$type = $_REQUEST['addtype']['page_type'];
-				
-				foreach($id as $page) {
-					Symphony::Database()->query('
-						INSERT INTO tbl_pages_types VALUES ("", "'.$page.'", "'.$type.'")
-					');
-				}
-			}
-			
+			/*@group Fieldset containing Page Type settings*/
 			$group = new XMLElement('fieldset');
 			$group->setAttribute('class', 'settings add_pagetype');
 			$group->appendChild(new XMLElement('legend', __('Add page type'))); 
@@ -159,6 +159,19 @@
 	
 			$group->appendChild($span);
 			$context['wrapper']->appendChild($group);
+			/*@group end*/
+			
+			/*@group mysql query on submit*/
+			if(isset($_REQUEST['action']['add_pagetype'])){
+				$id = $_REQUEST['addtype']['page'];
+				$type = $_REQUEST['addtype']['page_type'];
+				
+				foreach($id as $page) {
+					Symphony::Database()->query('
+						INSERT INTO tbl_pages_types VALUES ("", "'.$page.'", "'.$type.'")
+					');
+				}
+			}
 		}
 	}
 
