@@ -36,10 +36,10 @@
 				'rel' => 'stylesheet',
 				'type' => 'text/css',
 				'media' => 'print, screen',
-				'href' => URL . '/extensions/sitemap_xml/assets/publish.css'
+				'href' => URL . '/extensions/sitemap_xml/assets/sitemap_xml.publish.css'
 			)));
 			$head->appendChild(new XMLElement('script', '%nbsp;', array('src' => URL . '/symphony/assets/jquery.js')));
-			$head->appendChild(new XMLElement('script', '%nbsp;', array('src' => URL . '/extensions/sitemap_xml/assets/publish.js')));
+			$head->appendChild(new XMLElement('script', '%nbsp;', array('src' => URL . '/extensions/sitemap_xml/assets/sitemap_xml.publish.js')));
 			
 			// add headings
 			$sitemap->appendChild(new XMLElement('h1', 'Sitemap XML <span>' . Symphony::Configuration()->get('sitename', 'general') . '</span>'));
