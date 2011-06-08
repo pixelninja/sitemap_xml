@@ -51,11 +51,11 @@
 			// Add table to database
 			Symphony::Database()->query('
 				CREATE TABLE IF NOT EXISTS tbl_sitemap_xml (
-					`id` INT(4) UNSIGNED DEFAULT NULL,
+					`id` INT(4) UNSIGNED DEFAULT NULL AUTO_INCREMENT,
 					`page_id` INT(4) UNSIGNED DEFAULT NULL,
-					`section_id` INT(4) UNSIGNED DEFAULT NULL,
+					`datasource_handle` TINYTEXT DEFAULT NULL,
 					PRIMARY KEY (`id`),
-					UNIQUE KEY page_id_section_id (`page_id`, `section_id`)
+					UNIQUE KEY page_id (`page_id`)
 				) ENGINE=MyISAM
 			');
 			
@@ -77,7 +77,7 @@
 			
 			// Append assets
 			if($callback['driver'] == 'systempreferences') {
-				Symphony::Engine()->Page->addScriptToHead(URL . '/extensions/sitemap_xml/assets/sitemap_xml.addtype.js', 10001);
+				Symphony::Engine()->Page->addScriptToHead(URL . '/extensions/sitemap_xml/assets/sitemap_xml.ajax.js', 10001);
 			}
 		}
 		
@@ -182,17 +182,30 @@
 			$sm = new SectionManager(Symphony::Engine());
 			$sections = $sm->fetch();
 	
-			$section_list = array();
+			/*$section_list = array();
 			foreach($sections as $section) {
 				$section_list[] = array(
 									  $section->get('id'),
 									  false,
 									  $section->get('name')
 								  );
+			}*/
+			
+			require_once TOOLKIT . '/class.datasourcemanager.php';
+			$dsm = new DatasourceManager(Administration::instance());
+			$datasources = array();
+			foreach($dsm->listAll() as $ds) {
+				$datasources[] = array(
+									$ds['handle'], 
+									($config['datasource'] == $ds['handle']), 
+									$ds['name']
+								 );
 			}
 			
+			
+			
 			$fieldset = new XMLElement('fieldset');
-			$fieldset->setAttribute('class', 'settings pin-section');
+			$fieldset->setAttribute('class', 'settings pin_to_page');
 			$fieldset->appendChild(new XMLElement('legend', __('Pin section to page')));
 			$context['wrapper']->appendChild($fieldset);
 			
@@ -201,8 +214,8 @@
 			$group = new XMLElement('div');
 			$group->setAttribute('class', 'group');
 			
-			$label = Widget::Label(__('Section:'));
-			$label->appendChild(Widget::Select('pin[section]', $section_list));
+			$label = Widget::Label(__('Datasource:'));
+			$label->appendChild(Widget::Select('pin[datasource]', $datasources));
 			$group->appendChild($label);
 			
 			$label = Widget::Label(__('Page'));
@@ -213,7 +226,7 @@
 			
 			$group = new XMLElement('div');
 			
-			$span->appendChild(new XMLElement('button', __('Pin section to page'), array_merge(array('name' => 'action[pin]', 'type' => 'submit'))));
+			$span->appendChild(new XMLElement('button', __('Pin datasource to page'), array_merge(array('name' => 'action[pin]', 'type' => 'submit'))));
 	
 			$group->appendChild($span);
 			$fieldset->appendChild($group);
@@ -242,15 +255,13 @@
 			/*@group mysql query on Pin submit*/
 			if(isset($_REQUEST['action']['pin'])){
 				$page = $_REQUEST['pin']['page'];
-				$section = $_REQUEST['pin']['section'];
+				$datasource = $_REQUEST['pin']['datasource'];
 				
 				
 				
-				/*foreach($id as $page) {
-					Symphony::Database()->query('
-						INSERT INTO tbl_pages_types VALUES ("", "'.$page.'", "'.$type.'")
-					');
-				}*/
+				Symphony::Database()->query('
+					INSERT INTO tbl_sitemap_xml VALUES ("", "'.$page.'", "'.$datasource.'")
+				');
 			}
 		}
 	}
