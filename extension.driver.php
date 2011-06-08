@@ -48,6 +48,17 @@
 				Symphony::Configuration()->set('changefreq', 'monthly', 'sitemap_xml');
 			}
 			
+			// Add table to database
+			Symphony::Database()->query('
+				CREATE TABLE IF NOT EXISTS tbl_sitemap_xml (
+					`id` INT(4) UNSIGNED DEFAULT NULL,
+					`page_id` INT(4) UNSIGNED DEFAULT NULL,
+					`section_id` INT(4) UNSIGNED DEFAULT NULL,
+					PRIMARY KEY (`id`),
+					UNIQUE KEY page_id_section_id (`page_id`, `section_id`)
+				) ENGINE=MyISAM
+			');
+			
 			// Autogenerate a blank sitemap.xml
 			$fp = fopen(getcwd() . '/sitemap.xml', 'w+');
 			fclose($fp);
@@ -57,6 +68,7 @@
 		
 		public function uninstall() {
 			Symphony::Configuration()->remove('sitemap_xml');
+			Symphony::Database()->query('DROP TABLE IF EXISTS tbl_sitemap_xml');
 			return Administration::instance()->saveConfig();
 		}
 		
@@ -73,14 +85,14 @@
 			/*@group Fieldset containing config settings*/
 			$fieldset = new XMLElement('fieldset');
 			$fieldset->setAttribute('class', 'settings');
-			$fieldset->appendChild(new XMLElement('legend', 'Sitemap XML'));
+			$fieldset->appendChild(new XMLElement('legend', __('Sitemap XML')));
 			$context['wrapper']->appendChild($fieldset);
 			
-			
+			/* group 1*/
 			$group = new XMLElement('div');
 			$group->setAttribute('class', 'group');
 			
-			$label = Widget::Label('Home page type');
+			$label = Widget::Label(__('Home page type'));
 			$label->appendChild(
 				Widget::Input(
 					'settings[sitemap_xml][index_type]',
@@ -89,7 +101,7 @@
 			);
 			$group->appendChild($label);
 			
-			$label = Widget::Label('Global page type');
+			$label = Widget::Label(__('Global page type'));
 			$label->appendChild(
 				Widget::Input(
 					'settings[sitemap_xml][global]',
@@ -100,11 +112,11 @@
 			
 			$fieldset->appendChild($group);
 			
-			
+			/* group 2*/
 			$group = new XMLElement('div');
 			$group->setAttribute('class', 'group');
 			
-			$label = Widget::Label('Modification date of XML');
+			$label = Widget::Label(__('Modification date of XML'));
 			$label->appendChild(
 				Widget::Input(
 					'settings[sitemap_xml][lastmod]',
@@ -113,7 +125,7 @@
 			);
 			$group->appendChild($label);
 			
-			$label = Widget::Label('Change frequency of XML');
+			$label = Widget::Label(__('Change frequency of XML'));
 			$label->appendChild(
 				Widget::Input(
 					'settings[sitemap_xml][changefreq]',
@@ -134,12 +146,12 @@
 			
 			$pages = Symphony::Database()->fetch("SELECT p.* FROM `tbl_pages` AS p ORDER BY p.sortorder ASC");
 			
-			$options = array();
+			$page_list = array();
 			foreach($pages as $page) {
 				$page_types = Symphony::Database()->fetchCol('type', "SELECT `type` FROM `tbl_pages_types` WHERE page_id = '".$page['id']."' ORDER BY `type` ASC");
 				$page['types'] = $page_types;
 				
-				$options[] = array(
+				$page_list[] = array(
 					$page['id'], false, $page['title']
 				);
 				
@@ -147,7 +159,7 @@
 			}
 			
 			$label = Widget::Label(__('Pages'));
-			$select = Widget::Select('addtype[page][]', $options, array('multiple'=>'multiple'));
+			$select = Widget::Select('addtype[page][]', $page_list, array('multiple'=>'multiple'));
 			$label->appendChild($select);
 			$group->appendChild($label);
 			
@@ -161,7 +173,62 @@
 			$context['wrapper']->appendChild($group);
 			/*@group end*/
 			
-			/*@group mysql query on submit*/
+			
+			
+			
+			
+			/*@group Fieldset containing pinning options*/
+			require_once TOOLKIT. '/class.sectionmanager.php';
+			$sm = new SectionManager(Symphony::Engine());
+			$sections = $sm->fetch();
+	
+			$section_list = array();
+			foreach($sections as $section) {
+				$section_list[] = array(
+									  $section->get('id'),
+									  false,
+									  $section->get('name')
+								  );
+			}
+			
+			$fieldset = new XMLElement('fieldset');
+			$fieldset->setAttribute('class', 'settings pin-section');
+			$fieldset->appendChild(new XMLElement('legend', __('Pin section to page')));
+			$context['wrapper']->appendChild($fieldset);
+			
+			$span = new XMLElement('span', NULL, array('class' => 'frame'));
+			
+			$group = new XMLElement('div');
+			$group->setAttribute('class', 'group');
+			
+			$label = Widget::Label(__('Section:'));
+			$label->appendChild(Widget::Select('pin[section]', $section_list));
+			$group->appendChild($label);
+			
+			$label = Widget::Label(__('Page'));
+			$label->appendChild(Widget::Select('pin[page]', $page_list));
+			$group->appendChild($label);
+			$fieldset->appendChild($group);
+			
+			
+			$group = new XMLElement('div');
+			
+			$span->appendChild(new XMLElement('button', __('Pin section to page'), array_merge(array('name' => 'action[pin]', 'type' => 'submit'))));
+	
+			$group->appendChild($span);
+			$fieldset->appendChild($group);
+			/*@group end*/
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			/*@group mysql query on Type submit*/
 			if(isset($_REQUEST['action']['add_pagetype'])){
 				$id = $_REQUEST['addtype']['page'];
 				$type = $_REQUEST['addtype']['page_type'];
@@ -171,6 +238,19 @@
 						INSERT INTO tbl_pages_types VALUES ("", "'.$page.'", "'.$type.'")
 					');
 				}
+			}			
+			/*@group mysql query on Pin submit*/
+			if(isset($_REQUEST['action']['pin'])){
+				$page = $_REQUEST['pin']['page'];
+				$section = $_REQUEST['pin']['section'];
+				
+				
+				
+				/*foreach($id as $page) {
+					Symphony::Database()->query('
+						INSERT INTO tbl_pages_types VALUES ("", "'.$page.'", "'.$type.'")
+					');
+				}*/
 			}
 		}
 	}
