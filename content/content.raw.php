@@ -4,8 +4,6 @@
 	require_once(TOOLKIT . '/class.datasourcemanager.php');
 	
 	Class ContentExtensionSitemap_XmlRaw extends AdministrationPage{
-	
-		public $_pages = array();
 		
 		private $type_index = null;
 		private $type_global = null;
@@ -21,8 +19,7 @@
 		function view($context){
 			// fetch all pages
 			$pages = Symphony::Database()->fetch("SELECT p.* FROM `tbl_pages` AS p ORDER BY p.sortorder ASC");
-			$sitemap_ds = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml`");
-						
+			
 			// get values from config: remove spaces, remove any trailing commas and split into an array
 			$this->type_index = explode(',', trim(preg_replace('/ /', '', Symphony::Configuration()->get('index_type', 'sitemap_xml')), ','));
 			$this->type_global = explode(',', trim(preg_replace('/ /', '', Symphony::Configuration()->get('global', 'sitemap_xml')), ','));
@@ -87,27 +84,26 @@
 				
 				
 				
-				$dsm = new DatasourceManager(Administration::instance());
-				$datasources = $dsm->listAll(); 
-				
-				foreach($sitemap_ds as $ds) {
-				
-					var_dump($datasources);
-					
-					while($ds['datasource_handle'] == $datasources['handle']) {
-					
-					}
-					
-				
-				}
-				
-				
-				exit;
 				
 				
 				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				$ds_query = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml` WHERE page_id=".$page['id']);
+			
 				// Display associated entries from selected datasources
-				/*if (!empty($ds_query)) {
+				if (!empty($ds_query)) {
 				
 				
 					$dsm = new DatasourceManager(Administration::instance());
@@ -119,45 +115,98 @@
 					foreach($datasources as $datasource) {
 						$ds = $dsm->create($datasource['handle'], $params);
 						
-						if($ds['dsParamROOTELEMENT'] == $ds_query['datasource_handle']) {
-							$results = $ds->grab($params);
-							var_dump($ds);
-							if($results instanceof XMLElement) {
-								$xml = $results->generate(true);
-								$doc = DOMDocument::loadXML($xml);
+						$results = $ds->grab($params);
+						var_dump($ds);
+						if($results instanceof XMLElement) {
+							$xml = $results->generate(true);
+							$doc = DOMDocument::loadXML($xml);
+							
+							$xpath = new DOMXPath($doc);
+							
+							foreach($xpath->query('//entry') as $entry) {
 								
-								$xpath = new DOMXPath($doc);
+								//$p = $xpath->evaluate('string(name)', $entry);
+								//var_dump($p);
 								
-								foreach($xpath->query('//entry') as $entry) {
-									
-									//$p = $xpath->evaluate('string(name)', $entry);
-									//var_dump($p);
-									
-									
-						
-									$html .= "\n".'	&lt;url&gt;'."\n";
-									$html .= '	  &lt;loc&gt;'.URL.$page['url'].'&lt;/loc&gt;'."\n";
-									$html .= '	  &lt;lastmod&gt;'.$this->type_lastmod[0].'&lt;/lastmod&gt;'."\n";
-									$html .= '	  &lt;changefreq&gt;'.$this->type_changefreq[0].'&lt;/changefreq&gt;'."\n";
-									
-									$html .= '	  &lt;priority&gt;0.50&lt;/priority&gt;'."\n";
-									$html .= '	&lt;/url&gt;';
-									
 								
-								}
+					
+								$html .= "\n".'	&lt;url&gt;'."\n";
+								$html .= '	  &lt;loc&gt;'.URL.$page['url'].'&lt;/loc&gt;'."\n";
+								$html .= '	  &lt;lastmod&gt;'.$this->type_lastmod[0].'&lt;/lastmod&gt;'."\n";
+								$html .= '	  &lt;changefreq&gt;'.$this->type_changefreq[0].'&lt;/changefreq&gt;'."\n";
 								
+								$html .= '	  &lt;priority&gt;0.50&lt;/priority&gt;'."\n";
+								$html .= '	&lt;/url&gt;';
+								
+							
 							}
+							
 						}
 					}
 					
 								exit;
 
 
+
+
+
+
+
+
+
 				}
-				*/
+				
 				
 				//var_dump($page);
 				//exit;
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				//require_once(TOOLKIT . '/class.datasourcemanager.php');
+				//$dsm = new DatasourceManager(Administration::instance());
+
+				//$ds = @$dsm->create($config['datasource'], NULL, false);
+				//if (!$ds) {
+				//	$context['panel']->appendChild(new XMLElement('div', __(
+				//		'The Data Source with the name <code>%s</code> could not be found.',
+				//		array($config['datasource'])
+				//	)));
+				//	return;
+				//}
+				
+				//$param_pool = array();
+				//$xml = $ds->grab($param_pool)->generate();
+
+				//require_once(TOOLKIT . '/class.xsltprocess.php');
+				//$proc = new XsltProcess();
+				//$data = $proc->process(
+				//	$xml,
+				//	file_get_contents(EXTENSIONS . '/dashboard/lib/datasource-to-table.xsl')
+				//);
+
+				//$context['panel']->appendChild(new XMLElement('div', $data));
+				
+				
 				
 				
 				
