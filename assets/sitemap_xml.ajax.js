@@ -31,10 +31,13 @@ jQuery(function($){
 		}
 		if(parent.attr('class') == 'settings pin_to_page') {
 			var datasource = parent.find('select[name="pin[datasource]"]').val(),
+				relative_url = parent.find('input[name="pin[relative_url]"]').val(),
 				self = $(this),
 				page = parent.find('select[name="pin[page]"]').val();
-		
-			var data = {pin: {datasource: datasource, page: page}, 'action[pin]': 'run'};
+			
+			console.log(relative_url);
+			
+			var data = {pin: {relative_url: relative_url, datasource: datasource, page: page}, 'action[pin]': 'run'};
 		}
 				
 		self.attr('disabled', 'disabled');

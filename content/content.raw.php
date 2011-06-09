@@ -1,20 +1,28 @@
 <?php
 	
 	require_once(TOOLKIT . '/class.administrationpage.php');
+	require_once(TOOLKIT . '/class.datasourcemanager.php');
 	
 	Class ContentExtensionSitemap_XmlRaw extends AdministrationPage{
-		
+	
 		public $_pages = array();
 		
 		private $type_index = null;
 		private $type_global = null;
 		private $type_lastmod = null;
 		private $type_changefreq = null;
+
+		protected static $dsm = null;
+
+		public function __construct(Administration &$parent){
+			parent::__construct($parent);
+		}
 		
-		function view(){
+		function view($context){
 			// fetch all pages
 			$pages = Symphony::Database()->fetch("SELECT p.* FROM `tbl_pages` AS p ORDER BY p.sortorder ASC");
-					
+			$sitemap_ds = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml`");
+						
 			// get values from config: remove spaces, remove any trailing commas and split into an array
 			$this->type_index = explode(',', trim(preg_replace('/ /', '', Symphony::Configuration()->get('index_type', 'sitemap_xml')), ','));
 			$this->type_global = explode(',', trim(preg_replace('/ /', '', Symphony::Configuration()->get('global', 'sitemap_xml')), ','));
@@ -33,21 +41,14 @@
 				
 				// Set priority level
 				foreach($page['types'] as $type) {
-					if ($type == '1.00' || $type == 'high') 	$page['priority'] = '1.00';
-					elseif ($type == '0.50' || $type == 'mid')  $page['priority'] = '0.50';
-					elseif ($type == '0.10' || $type == 'low')  $page['priority'] = '0.10';
-					elseif ($type == '0.90') $page['priority'] = '0.90';
-					elseif ($type == '0.80') $page['priority'] = '0.80';
-					elseif ($type == '0.70') $page['priority'] = '0.70';
-					elseif ($type == '0.60') $page['priority'] = '0.60';
-					elseif ($type == '0.40') $page['priority'] = '0.40';
-					elseif ($type == '0.30') $page['priority'] = '0.30';
-					elseif ($type == '0.20') $page['priority'] = '0.20';
+					if ($type == 'high') 	$page['priority'] = '1.00';
+					elseif ($type == 'mid')  $page['priority'] = '0.50';
+					elseif ($type == 'low')  $page['priority'] = '0.10';
+					elseif (is_numeric($type)) $page['priority'] = $type;
 				}
 				
 				$this->_pages[] = $page;
 			}
-			
 			
 			// build the document
 			// I'm not sure if this is the best method but I needed some way of displaying the code in pre tags, hence the entities
@@ -76,19 +77,91 @@
 					$html .= '	  &lt;changefreq&gt;'.$this->type_changefreq[0].'&lt;/changefreq&gt;'."\n";
 					
 					if($page['priority'] == '1.00') 	$html .= '	  &lt;priority&gt;1.00&lt;/priority&gt;'."\n";
-					elseif($page['priority'] == '0.90') $html .= '	  &lt;priority&gt;0.90&lt;/priority&gt;'."\n";
-					elseif($page['priority'] == '0.80') $html .= '	  &lt;priority&gt;0.80&lt;/priority&gt;'."\n";
-					elseif($page['priority'] == '0.70') $html .= '	  &lt;priority&gt;0.70&lt;/priority&gt;'."\n";
-					elseif($page['priority'] == '0.60') $html .= '	  &lt;priority&gt;0.60&lt;/priority&gt;'."\n";
 					elseif($page['priority'] == '0.50') $html .= '	  &lt;priority&gt;0.50&lt;/priority&gt;'."\n";
-					elseif($page['priority'] == '0.40') $html .= '	  &lt;priority&gt;0.40&lt;/priority&gt;'."\n";
-					elseif($page['priority'] == '0.30') $html .= '	  &lt;priority&gt;0.30&lt;/priority&gt;'."\n";
-					elseif($page['priority'] == '0.20') $html .= '	  &lt;priority&gt;0.20&lt;/priority&gt;'."\n";
 					elseif($page['priority'] == '0.10') $html .= '	  &lt;priority&gt;0.10&lt;/priority&gt;'."\n";
+					elseif(is_numeric($page['priority'])) $html .= '	  &lt;priority&gt;'.$page['priority'].'&lt;/priority&gt;'."\n";
 					else $html .= '	  &lt;priority&gt;0.50&lt;/priority&gt;'."\n";
 					
 					$html .= '	&lt;/url&gt;';
 				}
+				
+				
+				
+				$dsm = new DatasourceManager(Administration::instance());
+				$datasources = $dsm->listAll(); 
+				
+				foreach($sitemap_ds as $ds) {
+				
+					var_dump($datasources);
+					
+					while($ds['datasource_handle'] == $datasources['handle']) {
+					
+					}
+					
+				
+				}
+				
+				
+				exit;
+				
+				
+				
+				// Display associated entries from selected datasources
+				/*if (!empty($ds_query)) {
+				
+				
+					$dsm = new DatasourceManager(Administration::instance());
+					$datasources = $dsm->listAll(); 
+					
+					
+					
+					$params = array();
+					foreach($datasources as $datasource) {
+						$ds = $dsm->create($datasource['handle'], $params);
+						
+						if($ds['dsParamROOTELEMENT'] == $ds_query['datasource_handle']) {
+							$results = $ds->grab($params);
+							var_dump($ds);
+							if($results instanceof XMLElement) {
+								$xml = $results->generate(true);
+								$doc = DOMDocument::loadXML($xml);
+								
+								$xpath = new DOMXPath($doc);
+								
+								foreach($xpath->query('//entry') as $entry) {
+									
+									//$p = $xpath->evaluate('string(name)', $entry);
+									//var_dump($p);
+									
+									
+						
+									$html .= "\n".'	&lt;url&gt;'."\n";
+									$html .= '	  &lt;loc&gt;'.URL.$page['url'].'&lt;/loc&gt;'."\n";
+									$html .= '	  &lt;lastmod&gt;'.$this->type_lastmod[0].'&lt;/lastmod&gt;'."\n";
+									$html .= '	  &lt;changefreq&gt;'.$this->type_changefreq[0].'&lt;/changefreq&gt;'."\n";
+									
+									$html .= '	  &lt;priority&gt;0.50&lt;/priority&gt;'."\n";
+									$html .= '	&lt;/url&gt;';
+									
+								
+								}
+								
+							}
+						}
+					}
+					
+								exit;
+
+
+				}
+				*/
+				
+				//var_dump($page);
+				//exit;
+				
+				
+				
+				
 			}
 			
 			$html .= "\n\n".'&lt;/urlset&gt;';

@@ -48,14 +48,15 @@
 				Symphony::Configuration()->set('changefreq', 'monthly', 'sitemap_xml');
 			}
 			
-			// Add table to database
+			// Add table to database 
+			//NOTE :: I NEED TO ADD A UNIQUE KEY OF PAGE_ID AND DATASOURCE_HANDLE HERE
 			Symphony::Database()->query('
 				CREATE TABLE IF NOT EXISTS tbl_sitemap_xml (
 					`id` INT(4) UNSIGNED DEFAULT NULL AUTO_INCREMENT,
 					`page_id` INT(4) UNSIGNED DEFAULT NULL,
 					`datasource_handle` TINYTEXT DEFAULT NULL,
-					PRIMARY KEY (`id`),
-					UNIQUE KEY page_id (`page_id`)
+					`relative_url` TINYTEXT DEFAULT NULL,
+					PRIMARY KEY (`id`)
 				) ENGINE=MyISAM
 			');
 			
@@ -151,8 +152,14 @@
 				$page_types = Symphony::Database()->fetchCol('type', "SELECT `type` FROM `tbl_pages_types` WHERE page_id = '".$page['id']."' ORDER BY `type` ASC");
 				$page['types'] = $page_types;
 				
+				$parent = null;
+				if($page['parent'] != null) {
+					$parent = Symphony::Database()->fetch("SELECT p.* FROM `tbl_pages` AS p WHERE p.id =".$page['parent']);
+					$parent = $parent[0]['title'].': ';
+				}
+				
 				$page_list[] = array(
-					$page['id'], false, $page['title']
+					$page['id'], false, $parent.$page['title']
 				);
 				
 				$this->_pages[] = $page;
@@ -172,25 +179,8 @@
 			$group->appendChild($span);
 			$context['wrapper']->appendChild($group);
 			/*@group end*/
-			
-			
-			
-			
-			
+
 			/*@group Fieldset containing pinning options*/
-			require_once TOOLKIT. '/class.sectionmanager.php';
-			$sm = new SectionManager(Symphony::Engine());
-			$sections = $sm->fetch();
-	
-			/*$section_list = array();
-			foreach($sections as $section) {
-				$section_list[] = array(
-									  $section->get('id'),
-									  false,
-									  $section->get('name')
-								  );
-			}*/
-			
 			require_once TOOLKIT . '/class.datasourcemanager.php';
 			$dsm = new DatasourceManager(Administration::instance());
 			$datasources = array();
@@ -202,11 +192,9 @@
 								 );
 			}
 			
-			
-			
 			$fieldset = new XMLElement('fieldset');
 			$fieldset->setAttribute('class', 'settings pin_to_page');
-			$fieldset->appendChild(new XMLElement('legend', __('Pin section to page')));
+			$fieldset->appendChild(new XMLElement('legend', __('Pin datasources to page')));
 			$context['wrapper']->appendChild($fieldset);
 			
 			$span = new XMLElement('span', NULL, array('class' => 'frame'));
@@ -226,20 +214,18 @@
 			
 			$group = new XMLElement('div');
 			
+			$label = Widget::Label(__('Relative URL'));
+			$label->appendChild(Widget::Input('pin[relative_url]', '/'));
+			$group->appendChild($label);
+			
+			$help = new XMLElement('p', 'For example: if the page was News, the relative url might be /{news-title/@handle}/{@id}/. This would output '.URL.'/news/random-article/32/', array('class' => 'help'));
+			$group->appendChild($help);
+			
 			$span->appendChild(new XMLElement('button', __('Pin datasource to page'), array_merge(array('name' => 'action[pin]', 'type' => 'submit'))));
 	
 			$group->appendChild($span);
 			$fieldset->appendChild($group);
 			/*@group end*/
-			
-			
-			
-			
-			
-			
-			
-			
-			
 			
 			/*@group mysql query on Type submit*/
 			if(isset($_REQUEST['action']['add_pagetype'])){
@@ -256,11 +242,10 @@
 			if(isset($_REQUEST['action']['pin'])){
 				$page = $_REQUEST['pin']['page'];
 				$datasource = $_REQUEST['pin']['datasource'];
-				
-				
+				$relative_url = $_REQUEST['pin']['relative_url'];
 				
 				Symphony::Database()->query('
-					INSERT INTO tbl_sitemap_xml VALUES ("", "'.$page.'", "'.$datasource.'")
+					INSERT INTO tbl_sitemap_xml VALUES ("", "'.$page.'", "'.$datasource.'", "'.$relative_url.'")
 				');
 			}
 		}
