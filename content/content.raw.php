@@ -16,9 +16,11 @@
 			parent::__construct($parent);
 		}
 		
+		
 		function view($context){
 			// fetch all pages
 			$pages = Symphony::Database()->fetch("SELECT p.* FROM `tbl_pages` AS p ORDER BY p.sortorder ASC");
+			//$datasources = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml`");
 			
 			// get values from config: remove spaces, remove any trailing commas and split into an array
 			$this->type_index = explode(',', trim(preg_replace('/ /', '', Symphony::Configuration()->get('index_type', 'sitemap_xml')), ','));
@@ -48,13 +50,13 @@
 			}
 			
 			// build the document
-			// I'm not sure if this is the best method but I needed some way of displaying the code in pre tags, hence the entities
+			// This is butt ugly but I needed some way of displaying the code in pre tags, hence the entities
 			$html  = '&lt;?xml version="1.0" encoding="UTF-8"?&gt;'."\n";
 			$html .= '&lt;urlset'."\n";
 			$html .= '  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'."\n";
 			$html .= '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'."\n";
 			$html .= '  xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"&gt;'."\n\n";
-			
+						
 			// iterate over each page
 			foreach($this->_pages as $page) {
 				// Display the home/index page
@@ -67,7 +69,7 @@
 					$html .= '	&lt;/url&gt;';
 				}
 				// Display all other pages
-				if ($page['is_global'] == true) {
+				if ($page['is_global'] == true && $page['is_home'] == false) {
 					$html .= "\n".'	&lt;url&gt;'."\n";
 					$html .= '	  &lt;loc&gt;'.URL.$page['url'].'/&lt;/loc&gt;'."\n";
 					$html .= '	  &lt;lastmod&gt;'.$this->type_lastmod[0].'&lt;/lastmod&gt;'."\n";
@@ -82,135 +84,56 @@
 					$html .= '	&lt;/url&gt;';
 				}
 				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				$ds_query = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml` WHERE page_id=".$page['id']);
-			
+				$datasources = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml` WHERE page_id=".$page['id']);
 				// Display associated entries from selected datasources
-				if (!empty($ds_query)) {
-				
-				
+				if (!empty($datasources)) {
 					$dsm = new DatasourceManager(Administration::instance());
-					$datasources = $dsm->listAll(); 
-					
-					
 					
 					$params = array();
 					foreach($datasources as $datasource) {
-						$ds = $dsm->create($datasource['handle'], $params);
-						
+						$ds = $dsm->create($datasource['datasource_handle'], $params);
 						$results = $ds->grab($params);
-						var_dump($ds);
+
 						if($results instanceof XMLElement) {
 							$xml = $results->generate(true);
 							$doc = DOMDocument::loadXML($xml);
 							
 							$xpath = new DOMXPath($doc);
 							
+							$expression = $datasource['relative_url'];
+							$page_url = URL . $page['url'];
+							$priority = number_format($page['priority'] - '0.20', 2, '.', ',');
+							$replacements = array();
+							
 							foreach($xpath->query('//entry') as $entry) {
+								preg_match_all('/\{[^\}]+\}/', $expression, $matches);
 								
-								//$p = $xpath->evaluate('string(name)', $entry);
-								//var_dump($p);
+								// Find replacements:
+								foreach($matches[0] as $match) {
+									$result = $xpath->evaluate('string(' . trim($match, '{}') . ')', $entry);
+									
+									if(!is_null($result)) {
+										$replacements[$match] = trim($result);
+									}else{
+										$replacements[$match] = '';
+									}
+								}
+								// Apply replacements:
+								$value = str_replace(array_keys($replacements),array_values($replacements),$expression);
+								$url = $page_url . $value;
 								
-								
-					
 								$html .= "\n".'	&lt;url&gt;'."\n";
-								$html .= '	  &lt;loc&gt;'.URL.$page['url'].'&lt;/loc&gt;'."\n";
+								$html .= '	  &lt;loc&gt;'.$url.'&lt;/loc&gt;'."\n";
 								$html .= '	  &lt;lastmod&gt;'.$this->type_lastmod[0].'&lt;/lastmod&gt;'."\n";
 								$html .= '	  &lt;changefreq&gt;'.$this->type_changefreq[0].'&lt;/changefreq&gt;'."\n";
 								
-								$html .= '	  &lt;priority&gt;0.50&lt;/priority&gt;'."\n";
+								$html .= '	  &lt;priority&gt;'.$priority.'&lt;/priority&gt;'."\n";
 								$html .= '	&lt;/url&gt;';
-								
-							
 							}
 							
 						}
 					}
-					
-								exit;
-
-
-
-
-
-
-
-
-
 				}
-				
-				
-				//var_dump($page);
-				//exit;
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				//require_once(TOOLKIT . '/class.datasourcemanager.php');
-				//$dsm = new DatasourceManager(Administration::instance());
-
-				//$ds = @$dsm->create($config['datasource'], NULL, false);
-				//if (!$ds) {
-				//	$context['panel']->appendChild(new XMLElement('div', __(
-				//		'The Data Source with the name <code>%s</code> could not be found.',
-				//		array($config['datasource'])
-				//	)));
-				//	return;
-				//}
-				
-				//$param_pool = array();
-				//$xml = $ds->grab($param_pool)->generate();
-
-				//require_once(TOOLKIT . '/class.xsltprocess.php');
-				//$proc = new XsltProcess();
-				//$data = $proc->process(
-				//	$xml,
-				//	file_get_contents(EXTENSIONS . '/dashboard/lib/datasource-to-table.xsl')
-				//);
-
-				//$context['panel']->appendChild(new XMLElement('div', $data));
-				
-				
-				
-				
-				
-				
 			}
 			
 			$html .= "\n\n".'&lt;/urlset&gt;';

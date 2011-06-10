@@ -48,10 +48,12 @@ jQuery(function($){
 			data: data,
 			success: function(){
 				self.attr('disabled', null);
-				return status.text(Symphony.Language.get('Complete!'));
+				status.find('img').remove;
+				status.text(Symphony.Language.get('Complete!'));
 		},
 			error: function(){
 				self.attr('disabled', null);
+				status.find('img').remove;
 				status.text(Symphony.Language.get('Request failed. Try again.'));
 			}
 		});
