@@ -39,16 +39,37 @@
 			$head->appendChild(new XMLElement('script', '%nbsp;', array('src' => URL . '/extensions/sitemap_xml/assets/sitemap_xml.publish.js')));
 			
 			// add headings
-			$sitemap->appendChild(new XMLElement('h1', 'Sitemap XML <span>' . Symphony::Configuration()->get('sitename', 'general') . '</span>'));
-			$sitemap->appendChild(new XMLElement('h2', 'Sitemap XML, ' . date('d F Y', time())));
+			$h1 = new XMLElement('h1', 'Sitemap XML <span>' . Symphony::Configuration()->get('sitename', 'general') . '</span>');
+			$h2 = new XMLElement('h2', 'Sitemap XML, ' . date('d F Y', time()));
 			// hidden heading to get the root url with jquery
-			$sitemap->appendChild(new XMLElement('h6', '<a href="'.URL.'"></a>'));
+			$h6 = new XMLElement('h6', '<a href="'.URL.'"></a>');
+			$google = new XMLElement('a', 'Ping Google', array(
+															'href'=>'http://www.google.com/webmasters/sitemaps/ping?sitemap='.URL.'/sitemap.xml',      
+															'class'=>'google',  
+															'target'=>'_blank'    
+														));
+			$bing = new XMLElement('a', 'Ping Bing', array(
+															'href'=>'http://www.bing.com/webmaster/ping.aspx?siteMap='.URL.'/sitemap.xml',      
+															'class'=>'bing',  
+															'target'=>'_blank'    
+														));
+			$yahoo = new XMLElement('a', 'Ping Yahoo', array(
+															'href'=>'http://search.yahooapis.com/SiteExplorerService/V1/updateNotification?appid=YahooDemo&url='.URL.'/sitemap.xml',      
+															'class'=>'yahoo',  
+															'target'=>'_blank'    
+														));
 			
 			// layer elements
 			$html->appendChild($head);
 			$html->appendChild($body);
 			$body->appendChild($sitemap);
-			$sitemap->appendChild($raw);
+			$h1->appendChild($raw);
+			$sitemap->appendChild($google);
+			$sitemap->appendChild($bing);
+			$sitemap->appendChild($yahoo);
+			$sitemap->appendChild($h1);
+			$sitemap->appendChild($h2);
+			$sitemap->appendChild($h6);
 			$sitemap->appendChild($pre);
 			
 			// echo content

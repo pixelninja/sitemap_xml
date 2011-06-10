@@ -5,8 +5,8 @@
 		public function about(){
 			return array(
 				'name' => 'Sitemap XML',
-				'version' => '2.0.1alpha',
-				'release-date' => '2011-06-07',
+				'version' => '2.0a',
+				'release-date' => '2011-06-10',
 				'author' => array(
 				 		'name' => 'Phill Gray',
 						'email' => 'phill@randb.com.au'
@@ -49,14 +49,14 @@
 			}
 			
 			// Add table to database 
-			//NOTE :: I NEED TO ADD A UNIQUE KEY OF PAGE_ID AND DATASOURCE_HANDLE HERE
 			Symphony::Database()->query('
 				CREATE TABLE IF NOT EXISTS tbl_sitemap_xml (
 					`id` INT(4) UNSIGNED DEFAULT NULL AUTO_INCREMENT,
 					`page_id` INT(4) UNSIGNED DEFAULT NULL,
-					`datasource_handle` TINYTEXT DEFAULT NULL,
+					`datasource_handle` VARCHAR(255) DEFAULT NULL,
 					`relative_url` TINYTEXT DEFAULT NULL,
-					PRIMARY KEY (`id`)
+					PRIMARY KEY (`id`),
+					UNIQUE KEY datasource_handle_page_id (`datasource_handle`, `page_id`)
 				) ENGINE=MyISAM
 			');
 			
@@ -94,21 +94,11 @@
 			$group->setAttribute('class', 'group');
 			
 			$label = Widget::Label(__('Home page type'));
-			$label->appendChild(
-				Widget::Input(
-					'settings[sitemap_xml][index_type]',
-					General::Sanitize(Symphony::Configuration()->get('index_type', 'sitemap_xml'))
-				)
-			);
+			$label->appendChild(Widget::Input('settings[sitemap_xml][index_type]', General::Sanitize(Symphony::Configuration()->get('index_type', 'sitemap_xml'))));
 			$group->appendChild($label);
 			
 			$label = Widget::Label(__('Global page type'));
-			$label->appendChild(
-				Widget::Input(
-					'settings[sitemap_xml][global]',
-					General::Sanitize(Symphony::Configuration()->get('global', 'sitemap_xml'))
-				)
-			);
+			$label->appendChild(Widget::Input('settings[sitemap_xml][global]',General::Sanitize(Symphony::Configuration()->get('global', 'sitemap_xml'))));
 			$group->appendChild($label);
 			
 			$fieldset->appendChild($group);
@@ -118,21 +108,11 @@
 			$group->setAttribute('class', 'group');
 			
 			$label = Widget::Label(__('Modification date of XML'));
-			$label->appendChild(
-				Widget::Input(
-					'settings[sitemap_xml][lastmod]',
-					General::Sanitize(Symphony::Configuration()->get('lastmod', 'sitemap_xml'))
-				)
-			);
+			$label->appendChild(Widget::Input('settings[sitemap_xml][lastmod]',General::Sanitize(Symphony::Configuration()->get('lastmod', 'sitemap_xml'))));
 			$group->appendChild($label);
 			
 			$label = Widget::Label(__('Change frequency of XML'));
-			$label->appendChild(
-				Widget::Input(
-					'settings[sitemap_xml][changefreq]',
-					General::Sanitize(Symphony::Configuration()->get('changefreq', 'sitemap_xml'))
-				)
-			);
+			$label->appendChild(Widget::Input('settings[sitemap_xml][changefreq]',General::Sanitize(Symphony::Configuration()->get('changefreq', 'sitemap_xml'))));
 			$group->appendChild($label);
 
 			$fieldset->appendChild($group);
@@ -187,7 +167,7 @@
 			foreach($dsm->listAll() as $ds) {
 				$datasources[] = array(
 									$ds['handle'], 
-									($config['datasource'] == $ds['handle']), 
+									null, 
 									$ds['name']
 								 );
 			}
@@ -228,25 +208,38 @@
 			/*@group end*/
 			
 			
-			$sitemap_entries = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml`");
-							
+			/*$sitemap_entries = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml`");
+						
+			$fieldset = new XMLElement('fieldset');
+			$fieldset->setAttribute('class', 'settings sitemap_data');
+			$fieldset->appendChild(new XMLElement('legend', __('Current alhscvx')));
+			$context['wrapper']->appendChild($fieldset);
+				
 			$table = new XMLElement('table');
 			$tableBody = array();
 			$tableHead = array(
 				array(__('Datasource'), 'col'),
 				array(__('Page'), 'col'),
-				array(__('Relative URL'), 'col')
+				array(__('Relative URL'), 'col'),
+				array(__('Delete'), 'col')
 			);	
 					
 			if(!empty($sitemap_entries)) {
 				foreach($sitemap_entries as $entry) {
 					$related_page = Symphony::Database()->fetch("SELECT title FROM `tbl_pages` WHERE id=" . $entry['page_id']);
 						
+					$ds = Widget::TableData(ucfirst(str_replace('_', ' ', $entry['datasource_handle'])));
+					$ds->appendChild(Widget::Input("delete[item]", $entry['id'], 'hidden'));
+					$page = Widget::TableData($related_page[0]['title']);
+					$url = Widget::TableData($entry['relative_url']);
+					$button = Widget::TableData(new XMLElement('button', __('Delete'), array_merge(array('name' => 'action[delete]', 'type' => 'submit'))));
+						
 					$tableBody[] = Widget::TableRow(
 						array(
-							Widget::TableData(ucfirst(str_replace('_', ' ', $entry['datasource_handle']))), 
-							Widget::TableData($related_page[0]['title']), 
-							Widget::TableData($entry['relative_url'])
+							$ds, 
+							$page, 
+							$url,
+							$button
 						)
 					);
 					
@@ -257,15 +250,7 @@
 				Widget::TableHead($tableHead), 
 				Widget::TableBody($tableBody)
 			);
-			$fieldset->appendChild($table);
-			
-			
-			
-			
-			
-			
-			
-			
+			$fieldset->appendChild($table);*/
 			
 			/*@group mysql query on Type submit*/
 			if(isset($_REQUEST['action']['add_pagetype'])){
@@ -288,6 +273,19 @@
 					INSERT INTO tbl_sitemap_xml VALUES ("", "'.$page.'", "'.$datasource.'", "'.$relative_url.'")
 				');
 			}
+			
+			
+			
+			
+			/*@group mysql query on Delete submit*/
+			/*if(isset($_REQUEST['action']['delete'])){
+				$page = $_REQUEST['delete']['item'];
+				
+				var_dump($page);
+				exit;
+				
+				Symphony::Database()->query('DELETE FROM tbl_sitemap_xml WHERE page_id=' .$page );
+			}*/
 		}
 	}
 
