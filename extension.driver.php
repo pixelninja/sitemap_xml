@@ -147,7 +147,7 @@
 			
 			$pages = Symphony::Database()->fetch("SELECT p.* FROM `tbl_pages` AS p ORDER BY p.sortorder ASC");
 			
-			$page_list = array();
+			$page_list = array('');
 			foreach($pages as $page) {
 				$page_types = Symphony::Database()->fetchCol('type', "SELECT `type` FROM `tbl_pages_types` WHERE page_id = '".$page['id']."' ORDER BY `type` ASC");
 				$page['types'] = $page_types;
@@ -183,7 +183,7 @@
 			/*@group Fieldset containing pinning options*/
 			require_once TOOLKIT . '/class.datasourcemanager.php';
 			$dsm = new DatasourceManager(Administration::instance());
-			$datasources = array();
+			$datasources = array('');
 			foreach($dsm->listAll() as $ds) {
 				$datasources[] = array(
 									$ds['handle'], 
@@ -226,6 +226,46 @@
 			$group->appendChild($span);
 			$fieldset->appendChild($group);
 			/*@group end*/
+			
+			
+			$sitemap_entries = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml`");
+							
+			$table = new XMLElement('table');
+			$tableBody = array();
+			$tableHead = array(
+				array(__('Datasource'), 'col'),
+				array(__('Page'), 'col'),
+				array(__('Relative URL'), 'col')
+			);	
+					
+			if(!empty($sitemap_entries)) {
+				foreach($sitemap_entries as $entry) {
+					$related_page = Symphony::Database()->fetch("SELECT title FROM `tbl_pages` WHERE id=" . $entry['page_id']);
+						
+					$tableBody[] = Widget::TableRow(
+						array(
+							Widget::TableData(ucfirst(str_replace('_', ' ', $entry['datasource_handle']))), 
+							Widget::TableData($related_page[0]['title']), 
+							Widget::TableData($entry['relative_url'])
+						)
+					);
+					
+				}
+			}
+			
+			$table = Widget::Table(
+				Widget::TableHead($tableHead), 
+				Widget::TableBody($tableBody)
+			);
+			$fieldset->appendChild($table);
+			
+			
+			
+			
+			
+			
+			
+			
 			
 			/*@group mysql query on Type submit*/
 			if(isset($_REQUEST['action']['add_pagetype'])){

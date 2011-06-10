@@ -108,7 +108,6 @@
 							foreach($xpath->query('//entry') as $entry) {
 								preg_match_all('/\{[^\}]+\}/', $expression, $matches);
 								
-								// Find replacements:
 								foreach($matches[0] as $match) {
 									$result = $xpath->evaluate('string(' . trim($match, '{}') . ')', $entry);
 									
@@ -118,7 +117,6 @@
 										$replacements[$match] = '';
 									}
 								}
-								// Apply replacements:
 								$value = str_replace(array_keys($replacements),array_values($replacements),$expression);
 								$url = $page_url . $value;
 								

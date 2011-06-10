@@ -34,8 +34,11 @@ jQuery(function($){
 				relative_url = parent.find('input[name="pin[relative_url]"]').val(),
 				self = $(this),
 				page = parent.find('select[name="pin[page]"]').val();
-			
-			console.log(relative_url);
+				
+			if (page == false || datasource == false || relative_url == false) {
+				alert('Please fill out all fields.');
+				return false;
+			}
 			
 			var data = {pin: {relative_url: relative_url, datasource: datasource, page: page}, 'action[pin]': 'run'};
 		}
