@@ -223,12 +223,13 @@
 			$context['wrapper']->appendChild($fieldset);
 				
 			$table = new XMLElement('table');
+			$table->setAttribute('class', 'selectable');
 			$tableBody = array();
 			$tableHead = array(
 				array(__('Datasource'), 'col'),
 				array(__('Page'), 'col'),
-				array(__('Relative URL'), 'col'),
-				array(__('Delete'), 'col')
+				array(__('Relative URL'), 'col')
+				//array(__('Delete'), 'col')
 			);	
 					
 			if(!empty($sitemap_entries)) {
@@ -236,28 +237,34 @@
 					$related_page = Symphony::Database()->fetch("SELECT title FROM `tbl_pages` WHERE id=" . $entry['page_id']);
 						
 					$ds = Widget::TableData(ucfirst(str_replace('_', ' ', $entry['datasource_handle'])));
+					$ds->appendChild(Widget::Input("row[".$entry['id']."]", $entry['id'], 'checkbox'));
 					$page = Widget::TableData($related_page[0]['title']);
 					$url = Widget::TableData($entry['relative_url']);
-					$button = Widget::TableData(new XMLElement('button', __('Delete'), array_merge(array('name' => 'action[delete]', 'type' => 'submit'))));
-					$button->appendChild(Widget::Input("deleteRow[item]", $entry['id'], 'hidden'));
+					//$button = Widget::TableData(new XMLElement('button', __('Delete'), array_merge(array('name' => 'action[delete]', 'type' => 'submit'))));
 						
 					$tableBody[] = Widget::TableRow(
 						array(
 							$ds, 
 							$page, 
-							$url,
-							$button
+							$url
+							//$button
 						)
 					);
 					
 				}
 			}
+			$table->appendChild(Widget::TableHead($tableHead));
+			$table->appendChild(Widget::TableBody($tableBody));
 			
-			$table = Widget::Table(
-				Widget::TableHead($tableHead), 
-				Widget::TableBody($tableBody)
-			);
 			$fieldset->appendChild($table);
+			
+			$span = new XMLElement('span', NULL, array(
+													'class' => 'frame',
+													'style' => 'margin-top: 15px;'
+												 ));
+			$span->appendChild(new XMLElement('button', __('Delete pinned datasource'), array_merge(array('name' => 'action[removeRow]', 'type' => 'submit'))));
+			$fieldset->appendChild($span);
+			
 			
 			/*@group mysql query on Type submit*/
 			if(isset($_REQUEST['action']['add_pagetype'])){
@@ -282,10 +289,13 @@
 			}
 			
 			/*@group mysql query on Delete submit*/
-			if(isset($_REQUEST['action']['delete'])){
-				$id = $_REQUEST['deleteRow']['item'];
-				
-				Symphony::Database()->query('DELETE FROM tbl_sitemap_xml WHERE id=' .$id );
+			if(isset($_REQUEST['action']['removeRow'])){
+				$item_id = $_REQUEST['row'];
+				//var_dump($item_id);
+				foreach($item_id as $id) {
+					//var_dump($id);
+					Symphony::Database()->query('DELETE FROM tbl_sitemap_xml WHERE id=' .$id );
+				}
 			}
 		}
 	}

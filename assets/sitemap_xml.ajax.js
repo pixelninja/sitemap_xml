@@ -5,7 +5,8 @@ Symphony.Language.add({
 
 jQuery(function($){
 	var _ = Symphony.Language.get;
-	var fieldset = $('.add_pagetype, .pin_to_page, .sitemap_data'),
+	//var fieldset = $('.add_pagetype, .pin_to_page, .sitemap_data'),
+	var fieldset = $('.add_pagetype, .pin_to_page'),
 		status = $('<span />').attr('class', 'status'),
 		gif = $('<img />'),
 		form = $('form');
@@ -61,12 +62,17 @@ jQuery(function($){
 		}
 				
 				
-		if(parent.attr('class') == 'settings sitemap_data') {
-			var item = $(this).next().val(),
-				self = $(this);
+		/*if(parent.attr('class') == 'settings sitemap_data') {
+			parent.find('input[checked="checked"]').each(function() {
+				console.log($(this).val());
+			});
+			var item = parent.find('input').val();
+			var	self = $(this);
 			
-			var data = {deleteRow: {item: item}, 'action[delete]': 'run'};			
-		}
+			console.log(item);
+			
+			var data = {row: {item: item}, 'action[removeRow]': 'run'};			
+		}*/
 				
 		self.attr('disabled', 'disabled');
 		status.prepend(gif.attr('src', Symphony.WEBSITE + '/extensions/sitemap_xml/assets/ajax-loader.gif'));
@@ -74,11 +80,12 @@ jQuery(function($){
 		$.ajax({
 			url: window.location.href,
 			data: data,
-			success: function(d){
+			success: function(html){
 				self.attr('disabled', null);
 				status.find('img').remove;
 				status.text(Symphony.Language.get('Complete!'));
 				
+				//$('fieldset.sitemap_data').append(html, 'fieldset.sitemap_data');
 				$('fieldset.sitemap_data').load(window.location.href + ' fieldset.sitemap_data legend, fieldset.sitemap_data table');
 			},
 			error: function(){
