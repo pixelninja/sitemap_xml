@@ -5,8 +5,8 @@ Symphony.Language.add({
 
 jQuery(function($){
 	var _ = Symphony.Language.get;
-	//var fieldset = $('.add_pagetype, .pin_to_page, .sitemap_data'),
-	var fieldset = $('.add_pagetype, .pin_to_page'),
+	var fieldset = $('.add_pagetype, .pin_to_page, .sitemap_data'),
+	//var fieldset = $('.add_pagetype, .pin_to_page'),
 		status = $('<span />').attr('class', 'status'),
 		gif = $('<img />'),
 		form = $('form');
@@ -30,6 +30,7 @@ jQuery(function($){
 	});
 	/*end*/
 	
+				
 	fieldset.append(status)
 	fieldset.find('button').click(function(e){
 		var parent = $(this).closest('fieldset');
@@ -62,17 +63,15 @@ jQuery(function($){
 		}
 				
 				
-		/*if(parent.attr('class') == 'settings sitemap_data') {
-			parent.find('input[checked="checked"]').each(function() {
-				console.log($(this).val());
+		if(parent.attr('class') == 'settings sitemap_data') {
+			var item = new Array();
+			$.each(parent.find('#item'), function() {
+				item.push($(this).val());
 			});
-			var item = parent.find('input').val();
 			var	self = $(this);
 			
-			console.log(item);
-			
 			var data = {row: {item: item}, 'action[removeRow]': 'run'};			
-		}*/
+		}
 				
 		self.attr('disabled', 'disabled');
 		status.prepend(gif.attr('src', Symphony.WEBSITE + '/extensions/sitemap_xml/assets/ajax-loader.gif'));
@@ -85,8 +84,13 @@ jQuery(function($){
 				status.find('img').remove;
 				status.text(Symphony.Language.get('Complete!'));
 				
-				//$('fieldset.sitemap_data').append(html, 'fieldset.sitemap_data');
-				$('fieldset.sitemap_data').load(window.location.href + ' fieldset.sitemap_data legend, fieldset.sitemap_data table');
+				if(parent.attr('class') == 'settings pin_to_page') {
+					if(parent.find('label.view_pinned').length == 0) {
+						parent.find('span.frame').after('<label class="view_pinned">Show pinned datasources <input type="checkbox" value="yes" name="view[pinned]"></label>');
+					}
+				}
+				
+				$('fieldset .container').load(window.location.href + ' fieldset.sitemap_data table');
 			},
 			error: function(){
 				self.attr('disabled', null);

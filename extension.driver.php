@@ -209,6 +209,7 @@
 			
 			if($sitemap_entries != null) {
 				$label = Widget::Label(__('Show pinned datasources'));
+				$label->setAttribute('class', 'view_pinned');
 				$label->appendChild(Widget::Input('view[pinned]', 'yes', 'checkbox'));
 				$group->appendChild($label);
 			}
@@ -222,6 +223,9 @@
 			$fieldset->appendChild(new XMLElement('legend', __('Current pinned datasources')));
 			$context['wrapper']->appendChild($fieldset);
 				
+			$container = new XMLElement('div');
+			$container->setAttribute('class', 'container');
+				
 			$table = new XMLElement('table');
 			$table->setAttribute('class', 'selectable');
 			$tableBody = array();
@@ -229,7 +233,6 @@
 				array(__('Datasource'), 'col'),
 				array(__('Page'), 'col'),
 				array(__('Relative URL'), 'col')
-				//array(__('Delete'), 'col')
 			);	
 					
 			if(!empty($sitemap_entries)) {
@@ -237,17 +240,15 @@
 					$related_page = Symphony::Database()->fetch("SELECT title FROM `tbl_pages` WHERE id=" . $entry['page_id']);
 						
 					$ds = Widget::TableData(ucfirst(str_replace('_', ' ', $entry['datasource_handle'])));
-					$ds->appendChild(Widget::Input("row[".$entry['id']."]", $entry['id'], 'checkbox'));
+					$ds->appendChild(Widget::Input("row[".$entry['id']."]", $entry['id'], 'checkbox', array('id' => 'item')));
 					$page = Widget::TableData($related_page[0]['title']);
 					$url = Widget::TableData($entry['relative_url']);
-					//$button = Widget::TableData(new XMLElement('button', __('Delete'), array_merge(array('name' => 'action[delete]', 'type' => 'submit'))));
 						
 					$tableBody[] = Widget::TableRow(
 						array(
 							$ds, 
 							$page, 
 							$url
-							//$button
 						)
 					);
 					
@@ -255,8 +256,8 @@
 			}
 			$table->appendChild(Widget::TableHead($tableHead));
 			$table->appendChild(Widget::TableBody($tableBody));
-			
-			$fieldset->appendChild($table);
+			$container->appendChild($table);
+			$fieldset->appendChild($container);
 			
 			$span = new XMLElement('span', NULL, array(
 													'class' => 'frame',
@@ -290,10 +291,9 @@
 			
 			/*@group mysql query on Delete submit*/
 			if(isset($_REQUEST['action']['removeRow'])){
-				$item_id = $_REQUEST['row'];
-				//var_dump($item_id);
+				$item_id = $_REQUEST['row']['list'];
+
 				foreach($item_id as $id) {
-					//var_dump($id);
 					Symphony::Database()->query('DELETE FROM tbl_sitemap_xml WHERE id=' .$id );
 				}
 			}
