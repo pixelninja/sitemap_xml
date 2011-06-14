@@ -4,7 +4,7 @@
 	
 	Class ContentExtensionSitemap_XmlXml extends AdministrationPage{
 		
-		function view(&$wrapper) {
+		function view() {
 			// fetch all pages
 			$pages = Symphony::Database()->fetch("SELECT p.* FROM `tbl_pages` AS p ORDER BY p.sortorder ASC");
 			

@@ -17,7 +17,7 @@
 		}
 		
 		
-		function view($context){
+		function view(){
 			// fetch all pages
 			$pages = Symphony::Database()->fetch("SELECT p.* FROM `tbl_pages` AS p ORDER BY p.sortorder ASC");
 			$datasources = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml`");
