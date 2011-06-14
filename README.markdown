@@ -5,6 +5,12 @@
 - Build Date: 2011-05-11
 - Requirements: Symphony 2.2.1
 
+## Changelog
+Version 2.0
+- Added the ability to add a type to multiple pages at once
+- Added the ability to 'pin' a datasource to a page, and specify a relative URL. This is used, for example, on a news page where you would like to dynamically add news entries.
+- Added the ability to ping Google, Bing and Yahoo
+
 ## Installation
 
 - Upload the 'sitemap_xml' folder to your Symphony 'extensions' folder.
@@ -25,9 +31,9 @@ The priority options are:
 - `high` (1.00)
 - `mid`  (0.50)
 - `low`  (0.10)
-- You can also specify the numerical value, ranging from `1.00` to `0.10`. Just note that it requires a leading zero and two decimal places.
+- You can also specify the numerical value, ranging from `1.00` to `0.10`.
 
-The index/home page will automatically be set to 1.00.
+The index/home page will automatically be set to 1.00, and at this stage cannot be changed (unless done manually).
 
 You can also specify the modification date and change frequency in the System > Preferences page. These are set as the current date/time at installation and "monthly" respectively.
 
@@ -35,7 +41,7 @@ You can also specify the modification date and change frequency in the System > 
 
 On installation, a `sitemap.xml` file is created in your root directory. This will be automatically populated later.
 
-Go to System > Preferences if you wish to change any default settings. There will be 4 input fields under "Sitemap XML".
+Go to System > Preferences if you wish to change any default settings, add types to multiple pages or pin a datasource to a page.
 
 Each page that is to be added to the sitemap file needs to have the global page type specified, as well as the desired priority level. Enter this in the pages Page Type field.
 

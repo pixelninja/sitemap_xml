@@ -20,7 +20,7 @@
 		function view($context){
 			// fetch all pages
 			$pages = Symphony::Database()->fetch("SELECT p.* FROM `tbl_pages` AS p ORDER BY p.sortorder ASC");
-			//$datasources = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml`");
+			$datasources = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml`");
 			
 			// get values from config: remove spaces, remove any trailing commas and split into an array
 			$this->type_index = explode(',', trim(preg_replace('/ /', '', Symphony::Configuration()->get('index_type', 'sitemap_xml')), ','));
@@ -84,51 +84,60 @@
 					$html .= '	&lt;/url&gt;';
 				}
 				
-				$datasources = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml` WHERE page_id=".$page['id']);
 				// Display associated entries from selected datasources
 				if (!empty($datasources)) {
 					$dsm = new DatasourceManager(Administration::instance());
 					
 					$params = array();
 					foreach($datasources as $datasource) {
-						$ds = $dsm->create($datasource['datasource_handle'], $params);
-						$results = $ds->grab($params);
-
-						if($results instanceof XMLElement) {
-							$xml = $results->generate(true);
-							$doc = DOMDocument::loadXML($xml);
-							
-							$xpath = new DOMXPath($doc);
-							
-							$expression = $datasource['relative_url'];
-							$page_url = URL . $page['url'];
-							$priority = number_format($page['priority'] - '0.20', 2, '.', ',');
-							$replacements = array();
-							
-							foreach($xpath->query('//entry') as $entry) {
-								preg_match_all('/\{[^\}]+\}/', $expression, $matches);
+						if($datasource['page_id'] == $page['id']) {
+							$ds = $dsm->create($datasource['datasource_handle'], $params);
+							$results = $ds->grab($params);
+	
+							if($results instanceof XMLElement) {
+								$xml = $results->generate(true);
+								$doc = DOMDocument::loadXML($xml);
 								
-								foreach($matches[0] as $match) {
-									$result = $xpath->evaluate('string(' . trim($match, '{}') . ')', $entry);
+								$xpath = new DOMXPath($doc);
+								
+								$expression = $datasource['relative_url'];
+								$page_url = URL . $page['url'];
+								$priority = number_format($page['priority'] - '0.20', 2, '.', ',');
+								$replacements = array();
+								
+								foreach($xpath->query('//entry') as $entry) {
+									preg_match_all('/\{[^\}]+\}/', $expression, $matches);
 									
-									if(!is_null($result)) {
-										$replacements[$match] = trim($result);
-									}else{
-										$replacements[$match] = '';
+									foreach($matches[0] as $match) {
+										$result = $xpath->evaluate('string(' . trim($match, '{}') . ')', $entry);
+										
+										if(!is_null($result)) {
+											$replacements[$match] = trim($result);
+										}else{
+											$replacements[$match] = '';
+										}
 									}
+									$value = str_replace(array_keys($replacements),array_values($replacements),$expression);
+										
+									if(substr($value, 0, 1) != '/') {
+										$value = '/'.$value;
+									}
+									if(substr($value, -1) != '/') {
+										$value = $value.'/';
+									}
+									
+									$url = $page_url . $value;
+									
+									$html .= "\n".'	&lt;url&gt;'."\n";
+									$html .= '	  &lt;loc&gt;'.$url.'&lt;/loc&gt;'."\n";
+									$html .= '	  &lt;lastmod&gt;'.$this->type_lastmod[0].'&lt;/lastmod&gt;'."\n";
+									$html .= '	  &lt;changefreq&gt;'.$this->type_changefreq[0].'&lt;/changefreq&gt;'."\n";
+									
+									$html .= '	  &lt;priority&gt;'.$priority.'&lt;/priority&gt;'."\n";
+									$html .= '	&lt;/url&gt;';
 								}
-								$value = str_replace(array_keys($replacements),array_values($replacements),$expression);
-								$url = $page_url . $value;
 								
-								$html .= "\n".'	&lt;url&gt;'."\n";
-								$html .= '	  &lt;loc&gt;'.$url.'&lt;/loc&gt;'."\n";
-								$html .= '	  &lt;lastmod&gt;'.$this->type_lastmod[0].'&lt;/lastmod&gt;'."\n";
-								$html .= '	  &lt;changefreq&gt;'.$this->type_changefreq[0].'&lt;/changefreq&gt;'."\n";
-								
-								$html .= '	  &lt;priority&gt;'.$priority.'&lt;/priority&gt;'."\n";
-								$html .= '	&lt;/url&gt;';
 							}
-							
 						}
 					}
 				}

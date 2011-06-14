@@ -78,6 +78,7 @@ jQuery(function($){
 				self.attr('disabled', null);
 				status.find('img').remove;
 				status.text(Symphony.Language.get('Complete!'));
+				
 				$('fieldset.sitemap_data').load(window.location.href + ' fieldset.sitemap_data legend, fieldset.sitemap_data table');
 			},
 			error: function(){
