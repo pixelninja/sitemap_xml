@@ -65,11 +65,13 @@ jQuery(function($){
 				
 		if(parent.attr('class') == 'settings sitemap_data') {
 			var item = new Array();
-			$.each(parent.find('#item'), function() {
+			$.each(parent.find('tr.selected #item'), function() {
 				item.push($(this).val());
 			});
 			var	self = $(this);
 			
+			console.log(item);
+
 			var data = {row: {item: item}, 'action[removeRow]': 'run'};			
 		}
 				

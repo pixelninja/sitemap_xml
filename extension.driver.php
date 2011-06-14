@@ -291,9 +291,12 @@
 			
 			/*@group mysql query on Delete submit*/
 			if(isset($_REQUEST['action']['removeRow'])){
-				$item_id = $_REQUEST['row']['list'];
+				$item_id = $_REQUEST['row'];
+
+				var_dump($item_id);
 
 				foreach($item_id as $id) {
+				var_dump($id);
 					Symphony::Database()->query('DELETE FROM tbl_sitemap_xml WHERE id=' .$id );
 				}
 			}
