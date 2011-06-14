@@ -4,16 +4,33 @@ Symphony.Language.add({
 });
 
 jQuery(function($){
-
 	var _ = Symphony.Language.get;
-	var fieldset = $('.add_pagetype, .pin_to_page'),
+	var fieldset = $('.add_pagetype, .pin_to_page, .sitemap_data'),
 		status = $('<span />').attr('class', 'status'),
 		gif = $('<img />'),
 		form = $('form');
-
+		
 	if (!fieldset.length) return;
-
-	fieldset.append(status).find('button').click(function(e){
+	
+	/*@group show/hide pinned datasources*/
+	var sitemap_data = $('.sitemap_data');
+	
+	if (fieldset.length > 0) {
+		sitemap_data.hide();
+	} 
+	
+	$('input[name="view[pinned]"]').live('change', function() {
+		self = $(this).attr('checked');
+		if(self == true) {
+			sitemap_data.show();
+		}else{
+			sitemap_data.hide();
+		}
+	});
+	/*end*/
+	
+	fieldset.append(status)
+	fieldset.find('button').click(function(e){
 		var parent = $(this).closest('fieldset');
 		var status = parent.find('span.status');
 		status.text('');
@@ -43,17 +60,26 @@ jQuery(function($){
 			var data = {pin: {relative_url: relative_url, datasource: datasource, page: page}, 'action[pin]': 'run'};
 		}
 				
+				
+		if(parent.attr('class') == 'settings sitemap_data') {
+			var item = $(this).next().val(),
+				self = $(this);
+			
+			var data = {deleteRow: {item: item}, 'action[delete]': 'run'};			
+		}
+				
 		self.attr('disabled', 'disabled');
 		status.prepend(gif.attr('src', Symphony.WEBSITE + '/extensions/sitemap_xml/assets/ajax-loader.gif'));
 		
 		$.ajax({
 			url: window.location.href,
 			data: data,
-			success: function(){
+			success: function(d){
 				self.attr('disabled', null);
 				status.find('img').remove;
 				status.text(Symphony.Language.get('Complete!'));
-		},
+				$('fieldset.sitemap_data').load(window.location.href + ' fieldset.sitemap_data legend, fieldset.sitemap_data table');
+			},
 			error: function(){
 				self.attr('disabled', null);
 				status.find('img').remove;

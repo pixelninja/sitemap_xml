@@ -83,6 +83,9 @@
 		}
 		
 		public function __appendPreferences($context) {
+			$pages = Symphony::Database()->fetch("SELECT p.* FROM `tbl_pages` AS p ORDER BY p.sortorder ASC");
+			$sitemap_entries = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml`");
+		
 			/*@group Fieldset containing config settings*/
 			$fieldset = new XMLElement('fieldset');
 			$fieldset->setAttribute('class', 'settings');
@@ -125,7 +128,6 @@
 			
 			$span = new XMLElement('span', NULL, array('class' => 'frame'));
 			
-			$pages = Symphony::Database()->fetch("SELECT p.* FROM `tbl_pages` AS p ORDER BY p.sortorder ASC");
 			
 			$page_list = array('');
 			foreach($pages as $page) {
@@ -204,15 +206,20 @@
 			$span->appendChild(new XMLElement('button', __('Pin datasource to page'), array_merge(array('name' => 'action[pin]', 'type' => 'submit'))));
 	
 			$group->appendChild($span);
+			
+			if($sitemap_entries != null) {
+				$label = Widget::Label(__('Show pinned datasources'));
+				$label->appendChild(Widget::Input('view[pinned]', 'yes', 'checkbox'));
+				$group->appendChild($label);
+			}
 			$fieldset->appendChild($group);
 			/*@group end*/
 			
 			
-			/*$sitemap_entries = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml`");
 						
 			$fieldset = new XMLElement('fieldset');
 			$fieldset->setAttribute('class', 'settings sitemap_data');
-			$fieldset->appendChild(new XMLElement('legend', __('Current alhscvx')));
+			$fieldset->appendChild(new XMLElement('legend', __('Current pinned datasources')));
 			$context['wrapper']->appendChild($fieldset);
 				
 			$table = new XMLElement('table');
@@ -229,10 +236,10 @@
 					$related_page = Symphony::Database()->fetch("SELECT title FROM `tbl_pages` WHERE id=" . $entry['page_id']);
 						
 					$ds = Widget::TableData(ucfirst(str_replace('_', ' ', $entry['datasource_handle'])));
-					$ds->appendChild(Widget::Input("delete[item]", $entry['id'], 'hidden'));
 					$page = Widget::TableData($related_page[0]['title']);
 					$url = Widget::TableData($entry['relative_url']);
 					$button = Widget::TableData(new XMLElement('button', __('Delete'), array_merge(array('name' => 'action[delete]', 'type' => 'submit'))));
+					$button->appendChild(Widget::Input("deleteRow[item]", $entry['id'], 'hidden'));
 						
 					$tableBody[] = Widget::TableRow(
 						array(
@@ -250,7 +257,7 @@
 				Widget::TableHead($tableHead), 
 				Widget::TableBody($tableBody)
 			);
-			$fieldset->appendChild($table);*/
+			$fieldset->appendChild($table);
 			
 			/*@group mysql query on Type submit*/
 			if(isset($_REQUEST['action']['add_pagetype'])){
@@ -274,18 +281,12 @@
 				');
 			}
 			
-			
-			
-			
 			/*@group mysql query on Delete submit*/
-			/*if(isset($_REQUEST['action']['delete'])){
-				$page = $_REQUEST['delete']['item'];
+			if(isset($_REQUEST['action']['delete'])){
+				$id = $_REQUEST['deleteRow']['item'];
 				
-				var_dump($page);
-				exit;
-				
-				Symphony::Database()->query('DELETE FROM tbl_sitemap_xml WHERE page_id=' .$page );
-			}*/
+				Symphony::Database()->query('DELETE FROM tbl_sitemap_xml WHERE id=' .$id );
+			}
 		}
 	}
 
