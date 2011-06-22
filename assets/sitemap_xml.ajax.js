@@ -5,7 +5,7 @@ Symphony.Language.add({
 
 jQuery(function($){
 	var _ = Symphony.Language.get;
-	var fieldset = $('.add_pagetype, .pin_to_page, .sitemap_data'),
+	var fieldset = $('.pin_to_page, .sitemap_data'),
 	//var fieldset = $('.add_pagetype, .pin_to_page'),
 		status = $('<span />').attr('class', 'status'),
 		gif = $('<img />'),

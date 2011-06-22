@@ -19,7 +19,7 @@
 				array(
 					'location' => 'Blueprints',
 					'name'	=> 'Sitemap XML',
-					'link'	=> '/xml/',
+					'link'	=> '/sitemap_xml/',
 				),
 			);
 		}
@@ -77,8 +77,12 @@
 			$callback = Symphony::Engine()->getPageCallback();
 			
 			// Append assets
-			if($callback['driver'] == 'systempreferences') {
+			/*if($callback['driver'] == 'systempreferences') {
 				Symphony::Engine()->Page->addScriptToHead(URL . '/extensions/sitemap_xml/assets/sitemap_xml.ajax.js', 10001);
+			}*/
+			if($callback['driver'] == 'sitemap_xml') {
+				Symphony::Engine()->Page->addScriptToHead(URL . '/extensions/sitemap_xml/assets/sitemap_xml.publish.js', 10001);
+				Symphony::Engine()->Page->addStylesheetToHead(URL . '/extensions/sitemap_xml/assets/sitemap_xml.publish.css', 'screen');
 			}
 		}
 		
@@ -121,49 +125,8 @@
 			$fieldset->appendChild($group);
 			/*@group end*/
 			
-			/*@group Fieldset containing Page Type settings*/
-			$group = new XMLElement('fieldset');
-			$group->setAttribute('class', 'settings add_pagetype');
-			$group->appendChild(new XMLElement('legend', __('Add page type'))); 
-			
-			$span = new XMLElement('span', NULL, array('class' => 'frame'));
-			
-			
-			$page_list = array('');
-			foreach($pages as $page) {
-				$page_types = Symphony::Database()->fetchCol('type', "SELECT `type` FROM `tbl_pages_types` WHERE page_id = '".$page['id']."' ORDER BY `type` ASC");
-				$page['types'] = $page_types;
-				
-				$parent = null;
-				if($page['parent'] != null) {
-					$parent = Symphony::Database()->fetch("SELECT p.* FROM `tbl_pages` AS p WHERE p.id =".$page['parent']);
-					$parent = $parent[0]['title'].': ';
-				}
-				
-				$page_list[] = array(
-					$page['id'], false, $parent.$page['title']
-				);
-				
-				$this->_pages[] = $page;
-			}
-			
-			$label = Widget::Label(__('Pages'));
-			$select = Widget::Select('addtype[page][]', $page_list, array('multiple'=>'multiple'));
-			$label->appendChild($select);
-			$group->appendChild($label);
-			
-			$label = Widget::Label(__('Type to add to selected pages:'));
-			$label->appendChild(Widget::Input('addtype[page_type]', 'high'));
-			$group->appendChild($label);
-			
-			$span->appendChild(new XMLElement('button', __('Add type to pages'), array_merge(array('name' => 'action[add_pagetype]', 'type' => 'submit'))));
-	
-			$group->appendChild($span);
-			$context['wrapper']->appendChild($group);
-			/*@group end*/
-
 			/*@group Fieldset containing pinning options*/
-			require_once TOOLKIT . '/class.datasourcemanager.php';
+			/*require_once TOOLKIT . '/class.datasourcemanager.php';
 			$dsm = new DatasourceManager(Administration::instance());
 			$datasources = array('');
 			foreach($dsm->listAll() as $ds) {
@@ -213,12 +176,12 @@
 				$label->appendChild(Widget::Input('view[pinned]', 'yes', 'checkbox'));
 				$group->appendChild($label);
 			}
-			$fieldset->appendChild($group);
+			$fieldset->appendChild($group);*/
 			/*@group end*/
 			
 			
 						
-			$fieldset = new XMLElement('fieldset');
+			/*$fieldset = new XMLElement('fieldset');
 			$fieldset->setAttribute('class', 'settings sitemap_data');
 			$fieldset->appendChild(new XMLElement('legend', __('Current pinned datasources')));
 			$context['wrapper']->appendChild($fieldset);
@@ -264,22 +227,10 @@
 													'style' => 'margin-top: 15px;'
 												 ));
 			$span->appendChild(new XMLElement('button', __('Delete pinned datasource'), array_merge(array('name' => 'action[removeRow]', 'type' => 'submit'))));
-			$fieldset->appendChild($span);
+			$fieldset->appendChild($span);*/
 			
-			
-			/*@group mysql query on Type submit*/
-			if(isset($_REQUEST['action']['add_pagetype'])){
-				$id = $_REQUEST['addtype']['page'];
-				$type = $_REQUEST['addtype']['page_type'];
-				
-				foreach($id as $page) {
-					Symphony::Database()->query('
-						INSERT INTO tbl_pages_types VALUES ("", "'.$page.'", "'.$type.'")
-					');
-				}
-			}			
 			/*@group mysql query on Pin submit*/
-			if(isset($_REQUEST['action']['pin'])){
+			/*if(isset($_REQUEST['action']['pin'])){
 				$page = $_REQUEST['pin']['page'];
 				$datasource = $_REQUEST['pin']['datasource'];
 				$relative_url = $_REQUEST['pin']['relative_url'];
@@ -288,9 +239,9 @@
 					INSERT INTO tbl_sitemap_xml VALUES ("", "'.$page.'", "'.$datasource.'", "'.$relative_url.'")
 				');
 			}
-			
+			*/
 			/*@group mysql query on Delete submit*/
-			if(isset($_REQUEST['action']['removeRow'])){
+			/*if(isset($_REQUEST['action']['removeRow'])){
 				$item_id = $_REQUEST['row'];
 
 				var_dump($item_id);
@@ -299,7 +250,7 @@
 				var_dump($id);
 					Symphony::Database()->query('DELETE FROM tbl_sitemap_xml WHERE id=' .$id );
 				}
-			}
+			}*/
 		}
 	}
 

@@ -1,15 +1,8 @@
-body{font-family: Gotham,Helvetica,Arial,sans-serif;color: #000;margin: 0;padding: 40px;font-size: 12px;line-height: 1;}
-a:link:before,a:visited:before{text-transform: lowercase;}
-#primaryNav li.placeholder{visibility: hidden;}
-h1{text-transform: none !important;font-size: 20px;font-weight: bold;margin: 0 0 5px;}
-h1 span {color: #ccc;}
-h2{color: #777;font-family: "Lucida Grande",Verdana,sans-serif;font-size: 10px;margin: 0 0 20px;}
-h6{display: none;}
-div.sitemap{float: left;margin: 0 0 40px;width: 100%;position: relative;}
-a.raw,a.google,a.bing,a.yahoo{position: absolute;top: 0;font-weight: normal;color: #000;padding: 4px 6px;font-family: "Lucida Grande",Verdana,sans-serif;font-size: 11px;border: 1px solid #E6E6E5;background: #f5f5f4;border-radius: 4px;-moz-border-radius: 4px;-webkit-border-radius: 4px;text-decoration: none;}
+h2{position: relative;}
+a.raw,a.google,a.bing,a.yahoo{position: absolute;top: 0;font-weight: normal;color: #000;padding: 1px 6px 2px;font-family: "Lucida Grande",Verdana,sans-serif;font-size: 11px;border: 1px solid #E6E6E5;background: #f5f5f4;border-radius: 4px;-moz-border-radius: 4px;-webkit-border-radius: 4px;text-decoration: none;}
 a.google,a.bing,a.yahoo{position: fixed;top: 10px;right: 10px;padding: 10px;font-size: 15px;text-align:center;width:95px;}
 a.raw{left: 75%;}
 a.bing{top: 60px;}
 a.yahoo{top: 110px;}
 a.raw:hover,a.google:hover,a.bing:hover,a.yahoo:hover{background: #ccc;}
-code, pre{float: left;width: 75%;min-width: 890px;padding: 30px;border: 1px solid #E6E6E5;background: #f5f5f4;border-radius: 4px;-moz-border-radius: 4px;-webkit-border-radius: 4px;}
+code, pre, textarea{float: left;width: 75%;min-width: 890px;padding: 30px;border: 1px solid #E6E6E5;background: #f5f5f4;border-radius: 4px;-moz-border-radius: 4px;-webkit-border-radius: 4px;}
