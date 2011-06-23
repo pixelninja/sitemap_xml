@@ -19,7 +19,7 @@
 				array(
 					'location' => 'Blueprints',
 					'name'	=> 'Sitemap XML',
-					'link'	=> '/sitemap_xml/',
+					'link'	=> '/xml/',
 				),
 			);
 		}
@@ -80,7 +80,7 @@
 			/*if($callback['driver'] == 'systempreferences') {
 				Symphony::Engine()->Page->addScriptToHead(URL . '/extensions/sitemap_xml/assets/sitemap_xml.ajax.js', 10001);
 			}*/
-			if($callback['driver'] == 'sitemap_xml') {
+			if($callback['driver'] == 'xml') {
 				Symphony::Engine()->Page->addScriptToHead(URL . '/extensions/sitemap_xml/assets/sitemap_xml.publish.js', 10001);
 				Symphony::Engine()->Page->addStylesheetToHead(URL . '/extensions/sitemap_xml/assets/sitemap_xml.publish.css', 'screen');
 			}

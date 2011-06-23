@@ -1,82 +1,103 @@
 <?php
 	
 	require_once(TOOLKIT . '/class.administrationpage.php');
+	require_once(TOOLKIT . '/class.datasourcemanager.php');
 	
 	Class ContentExtensionSitemap_XmlXml extends AdministrationPage{
 		
-		function view() {
-			// fetch all pages
+		public function view() {	
 			$pages = Symphony::Database()->fetch("SELECT p.* FROM `tbl_pages` AS p ORDER BY p.sortorder ASC");
-			
-			// Add elements
-			$html = new XMLElement('html');
-			$head = new XMLElement('head');
-			$body = new XMLElement('body');
-			$sitemap = new XMLElement('div', null, array('class' => 'sitemap'));
+
+			$this->setPageType('index');
+			$this->setTitle(__('Sitemap XML Generator'));
+			//$this->appendSubheading(__('Sitemap XML Generator'), '<a class="raw" href="'.URL.'/symphony/extension/sitemap_xml/raw/" rel="source">View raw</a>');
+
+			$h2 = new XMLElement('h2', __('Sitemap XML'));
+			$h2->appendChild(new XMLElement('span', __('Generator')));
+
+			/* sitemap output */
+			$fieldset = new XMLElement('fieldset', null, array('class'=>'primary'));
 			$pre = new XMLElement('pre');
-			$raw = new XMLElement('a', 'View raw', array(
-												   	  'class' => 'raw',
-												   	  'rel' => 'external',
-												   	  'href' => URL.'/sitemap.xml'
-												   ));
-						
-			// add doctype
-			$html->setDTD('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">');
-			
-			// add head
-			$head->appendChild(new XMLElement('meta', null, array(
-				'http-equiv' => 'Content-Type', 
-				'context' => 'text/html; charset=utf-8'
-			)));
-			$head->appendChild(new XMLElement('title', 'Sitemap XML — ' . Symphony::Configuration()->get('sitename', 'general')));
-			$head->appendChild(new XMLElement('link', null, array(
-				'rel' => 'stylesheet',
-				'type' => 'text/css',
-				'media' => 'print, screen',
-				'href' => URL . '/extensions/sitemap_xml/assets/sitemap_xml.publish.css'
-			)));
-			$head->appendChild(new XMLElement('script', '%nbsp;', array('src' => URL . '/symphony/assets/jquery.js')));
-			$head->appendChild(new XMLElement('script', '%nbsp;', array('src' => URL . '/extensions/sitemap_xml/assets/sitemap_xml.publish.js')));
-			
-			// add headings
-			$h1 = new XMLElement('h1', 'Sitemap XML <span>' . Symphony::Configuration()->get('sitename', 'general') . '</span>');
-			$h2 = new XMLElement('h2', 'Sitemap XML, ' . date('d F Y', time()));
-			// hidden heading to get the root url with jquery
-			$h6 = new XMLElement('h6', '<a href="'.URL.'"></a>');
-			$google = new XMLElement('a', 'Ping Google', array(
+
+			$h2->appendChild(new XMLElement('a', 'View raw', array(
+															'href'=>URL.'/symphony/extension/sitemap_xml/raw/',      
+															'class'=>'raw',   
+															'rel'=>'source'  
+														)));
+			$h2->appendChild(new XMLElement('a', 'Ping Google', array(
 															'href'=>'http://www.google.com/webmasters/sitemaps/ping?sitemap='.URL.'/sitemap.xml',      
 															'class'=>'google',  
-															'target'=>'_blank'    
-														));
-			$bing = new XMLElement('a', 'Ping Bing', array(
+															'rel'=>'external'    
+														)));
+			$h2->appendChild(new XMLElement('a', 'Ping Bing', array(
 															'href'=>'http://www.bing.com/webmaster/ping.aspx?siteMap='.URL.'/sitemap.xml',      
 															'class'=>'bing',  
-															'target'=>'_blank'    
-														));
-			$yahoo = new XMLElement('a', 'Ping Yahoo', array(
+															'rel'=>'external'    
+														)));
+			$h2->appendChild(new XMLElement('a', 'Ping Yahoo', array(
 															'href'=>'http://search.yahooapis.com/SiteExplorerService/V1/updateNotification?appid=YahooDemo&url='.URL.'/sitemap.xml',      
 															'class'=>'yahoo',  
-															'target'=>'_blank'    
-														));
+															'rel'=>'external'    
+														)));
+
+			$this->Contents->appendChild($h2);
+
+			$fieldset->appendChild($pre);
+			$this->Form->appendChild($fieldset);
+			/* end */
+
+			/* ds linking */
+			$fieldset = new XMLElement('fieldset', null, array('class'=>'secondary'));
+
+			$dsm = new DatasourceManager(Administration::instance());
+			$datasources = array('');
+			foreach($dsm->listAll() as $ds) {
+				$datasources[] = array(
+									$ds['handle'], 
+									null, 
+									$ds['name']
+								 );
+			}
 			
-			// layer elements
-			$html->appendChild($head);
-			$html->appendChild($body);
-			$body->appendChild($sitemap);
-			$h1->appendChild($raw);
-			$sitemap->appendChild($google);
-			$sitemap->appendChild($bing);
-			$sitemap->appendChild($yahoo);
-			$sitemap->appendChild($h1);
-			$sitemap->appendChild($h2);
-			$sitemap->appendChild($h6);
-			$sitemap->appendChild($pre);
+			$page_list = array('');
+			foreach($pages as $page) {
+				$page_list[] = array(
+									$page['id'],
+									null,
+									$page['title']
+								);
+			}
 			
-			// echo content
-			header('content-type: text/html');
-			echo $html->generate(true);
-						
-			//stop the loading of Symphony core
-			die;
+			$group = new XMLElement('div', null, array('class'=>'group'));
+			
+			$label = Widget::Label(__('Datasource:'));
+			$label->appendChild(Widget::Select('pin[datasource]', $datasources));
+			$group->appendChild($label);
+			
+			$label = Widget::Label(__('Page'));
+			$label->appendChild(Widget::Select('pin[page]', $page_list));
+			$group->appendChild($label);
+			$fieldset->appendChild($group);
+			
+			
+			$group = new XMLElement('div');
+			
+			$label = Widget::Label(__('Relative URL'));
+			$label->appendChild(Widget::Input('pin[relative_url]', '/'));
+			$group->appendChild($label);
+			
+			$help = new XMLElement('p', 'For example: if the page was News, the relative url might be /{news-title/@handle}/{@id}/. This would output '.URL.'/news/random-article/32/', array('class' => 'help'));
+			$group->appendChild($help);
+			
+			if($sitemap_entries != null) {
+				$label = Widget::Label(__('Show pinned datasources'));
+				$label->setAttribute('class', 'view_pinned');
+				$label->appendChild(Widget::Input('view[pinned]', 'yes', 'checkbox'));
+				$group->appendChild($label);
+			}
+			$fieldset->appendChild($group);
+
+			$this->Form->appendChild($fieldset);
+			/* end */
 		}
 	}
