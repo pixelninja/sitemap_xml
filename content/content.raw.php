@@ -51,37 +51,37 @@
 			
 			// build the document
 			// This is butt ugly but I needed some way of displaying the code in pre tags, hence the entities
-			$html  = '&lt;?xml version="1.0" encoding="UTF-8"?&gt;'."\n";
-			$html .= '&lt;urlset'."\n";
+			$html  = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
+			$html .= '<urlset'."\n";
 			$html .= '  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'."\n";
 			$html .= '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'."\n";
-			$html .= '  xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"&gt;'."\n\n";
+			$html .= '  xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">'."\n\n";
 						
 			// iterate over each page
 			foreach($this->_pages as $page) {
 				// Display the home/index page
 				if ($page['is_home'] == true) {
-					$html .= '	&lt;url&gt;'."\n";
-					$html .= '	  &lt;loc&gt;'.URL.$page['url'].'/&lt;/loc&gt;'."\n";
-					$html .= '	  &lt;lastmod&gt;'.$this->type_lastmod[0].'&lt;/lastmod&gt;'."\n";
-					$html .= '	  &lt;changefreq&gt;'.$this->type_changefreq[0].'&lt;/changefreq&gt;'."\n";
-					$html .= '	  &lt;priority&gt;1.00&lt;/priority&gt;'."\n";
-					$html .= '	&lt;/url&gt;';
+					$html .= '	<url>'."\n";
+					$html .= '	  <loc>'.URL.$page['url'].'/</loc>'."\n";
+					$html .= '	  <lastmod>'.$this->type_lastmod[0].'</lastmod>'."\n";
+					$html .= '	  <changefreq>'.$this->type_changefreq[0].'</changefreq>'."\n";
+					$html .= '	  <priority>1.00</priority>'."\n";
+					$html .= '	</url>';
 				}
 				// Display all other pages
 				if ($page['is_global'] == true && $page['is_home'] == false) {
-					$html .= "\n".'	&lt;url&gt;'."\n";
-					$html .= '	  &lt;loc&gt;'.URL.$page['url'].'/&lt;/loc&gt;'."\n";
-					$html .= '	  &lt;lastmod&gt;'.$this->type_lastmod[0].'&lt;/lastmod&gt;'."\n";
-					$html .= '	  &lt;changefreq&gt;'.$this->type_changefreq[0].'&lt;/changefreq&gt;'."\n";
+					$html .= "\n".'	<url>'."\n";
+					$html .= '	  <loc>'.URL.$page['url'].'/</loc>'."\n";
+					$html .= '	  <lastmod>'.$this->type_lastmod[0].'</lastmod>'."\n";
+					$html .= '	  <changefreq>'.$this->type_changefreq[0].'</changefreq>'."\n";
 					
-					if($page['priority'] == '1.00') 	$html .= '	  &lt;priority&gt;1.00&lt;/priority&gt;'."\n";
-					elseif($page['priority'] == '0.50') $html .= '	  &lt;priority&gt;0.50&lt;/priority&gt;'."\n";
-					elseif($page['priority'] == '0.10') $html .= '	  &lt;priority&gt;0.10&lt;/priority&gt;'."\n";
-					elseif(is_numeric($page['priority'])) $html .= '	  &lt;priority&gt;'.$page['priority'].'&lt;/priority&gt;'."\n";
-					else $html .= '	  &lt;priority&gt;0.50&lt;/priority&gt;'."\n";
+					if($page['priority'] == '1.00') 	$html .= '	  <priority>1.00</priority>'."\n";
+					elseif($page['priority'] == '0.50') $html .= '	  <priority>0.50</priority>'."\n";
+					elseif($page['priority'] == '0.10') $html .= '	  <priority>0.10</priority>'."\n";
+					elseif(is_numeric($page['priority'])) $html .= '	  <priority>'.$page['priority'].'</priority>'."\n";
+					else $html .= '	  <priority>0.50</priority>'."\n";
 					
-					$html .= '	&lt;/url&gt;';
+					$html .= '	</url>';
 				}
 				
 				// Display associated entries from selected datasources
@@ -128,13 +128,13 @@
 									
 									$url = $page_url . $value;
 									
-									$html .= "\n".'	&lt;url&gt;'."\n";
-									$html .= '	  &lt;loc&gt;'.$url.'&lt;/loc&gt;'."\n";
-									$html .= '	  &lt;lastmod&gt;'.$this->type_lastmod[0].'&lt;/lastmod&gt;'."\n";
-									$html .= '	  &lt;changefreq&gt;'.$this->type_changefreq[0].'&lt;/changefreq&gt;'."\n";
+									$html .= "\n".'	<url>'."\n";
+									$html .= '	  <loc>'.$url.'</loc>'."\n";
+									$html .= '	  <lastmod>'.$this->type_lastmod[0].'</lastmod>'."\n";
+									$html .= '	  <changefreq>'.$this->type_changefreq[0].'</changefreq>'."\n";
 									
-									$html .= '	  &lt;priority&gt;'.$priority.'&lt;/priority&gt;'."\n";
-									$html .= '	&lt;/url&gt;';
+									$html .= '	  <priority>'.$priority.'</priority>'."\n";
+									$html .= '	</url>';
 								}
 								
 							}
@@ -143,7 +143,7 @@
 				}
 			}
 			
-			$html .= "\n\n".'&lt;/urlset&gt;';
+			$html .= "\n\n".'</urlset>';
 			echo $html;
 			
 			// File path
@@ -151,10 +151,10 @@
 			# Open the file and reset it, to recieve the new code
 			$open_file = fopen($custom_file, 'w');
 			// Replace html entities with ASCII 
-			$valid_xml = str_replace('&lt;', '<', str_replace('&gt;', '>', $html));
+			//$valid_xml = str_replace('<', '<', str_replace('>', '>', $html));
 			
 			# Write xml to file, then close
-			fwrite($open_file, $valid_xml);
+			fwrite($open_file, $html);
 			fclose($open_file);
 			
 			//stop the loading of Symphony core

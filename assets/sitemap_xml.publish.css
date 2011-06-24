@@ -1,6 +1,6 @@
 h2{position: relative;font-size:20px;font-weight: bold;}
 h2 span{color: #ccc; float: none !important;}
-.primary{margin: 50px 19px;}
+.primary{margin: 50px 19px 0;}
 a.raw,a.google,a.bing,a.yahoo{position:absolute; top:35px; padding:5px; font-size:15px; text-align:center; width:95px; font-weight:normal; color:#000; font-family:"Lucida Grande",Verdana,sans-serif; border:1px solid #E6E6E5; background:#f5f5f4; border-radius:4px; -moz-border-radius:4px; -webkit-border-radius:4px; text-decoration:none;}
 a.raw{left: 400px;}
 a.google{left: 0;}
@@ -10,17 +10,8 @@ a.raw:hover,a.google:hover,a.bing:hover,a.yahoo:hover{background: #ccc;}
 pre{white-space: pre-wrap; padding: 30px;border: 1px solid #E6E6E5;background: #f5f5f4;border-radius: 4px;-moz-border-radius: 4px;-webkit-border-radius: 4px;}
 
 .secondary{margin: 50px 19px 0;}
-
-
-
-
-
-
-
-
-
-#footer{
-	position: fixed;
+legend{
+	margin-bottom: 1em;
 }
 
-
+#footer{position: relative; float: left; padding: 1.75em 1.5%; width: 97%;}
