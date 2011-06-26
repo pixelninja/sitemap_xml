@@ -49,7 +49,7 @@
 
 			/* Pin DS to Page */
 			$fieldset = new XMLElement('fieldset', null, array('class'=>'secondary'));
-			$fieldset->appendChild(new XMLElement('legend', __('Pin datasources to page')));
+			$fieldset->appendChild(new XMLElement('h3', __('Pin datasource to page')));
 
 			$dsm = new DatasourceManager(Administration::instance());
 			$datasources = array('');
@@ -104,7 +104,7 @@
 			if($sitemap_entries != null) {
 				
 				$fieldset = new XMLElement('fieldset', null, array('class'=>'secondary'));
-				$fieldset->appendChild(new XMLElement('legend', __('Current pinned datasources')));
+				$fieldset->appendChild(new XMLElement('h3', __('Current pinned datasources')));
 				$group = new XMLElement('div');
 					
 				$table = new XMLElement('table');
@@ -161,28 +161,54 @@
 				$datasource = $_REQUEST['pin']['datasource'];
 				$relative_url = $_REQUEST['pin']['relative_url'];
 				
-				Symphony::Database()->query('
-					INSERT INTO tbl_sitemap_xml VALUES ("", "'.$page.'", "'.$datasource.'", "'.$relative_url.'")
-				');
-				
-				header("Location: ".URL."/symphony/extension/sitemap_xml/xml/success/");
+				try {
+					Symphony::Database()->query('
+						INSERT INTO tbl_sitemap_xml VALUES ("", "'.$page.'", "'.$datasource.'", "'.$relative_url.'")
+					');
+					
+					Administration::instance()->Page->pageAlert(
+						__('Datasource successfully pinned to page.'),
+						Alert::SUCCESS
+					);
+				}
+				catch (Exception $e) {
+					if($e->getCode() == '0') { 
+						Administration::instance()->Page->pageAlert(
+							__('ERROR: That combination already exists. Try again.'),
+							Alert::ERROR
+						);
+					} else{
+						Administration::instance()->Page->pageAlert(
+							__('Exception caught: '.$e->getMessage()),
+							Alert::ERROR
+						);
+					}
+				}
 			}
 			
 			/*@group mysql query on Delete submit*/
 			if(isset($_REQUEST['action']['removeRow'])){
 				$item_id = $_REQUEST['row'];
-
-				foreach($item_id as $id) {
-					Symphony::Database()->query('DELETE FROM tbl_sitemap_xml WHERE id=' .$id );
-				}
 				
-				header("Location: ".URL."/symphony/extension/sitemap_xml/xml/success/");
-			}
+				try {
+					foreach($item_id as $id) {
+						Symphony::Database()->query('DELETE FROM tbl_sitemap_xml WHERE id=' .$id );
+					}
 
-			
-			
-			
-			
-			
+					//header("Location: ".URL."/symphony/extension/sitemap_xml/xml/success/");
+					
+					Administration::instance()->Page->pageAlert(
+						__('Entry successfully deleted.'),
+						Alert::SUCCESS
+					);
+				}
+				catch (Exception $e) {
+					
+					Administration::instance()->Page->pageAlert(
+						__('Exception caught: ',  $e->getMessage()),
+						Alert::ERROR
+					);
+				}
+			}
 		}
 	}
