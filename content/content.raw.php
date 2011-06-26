@@ -10,7 +10,7 @@
 		private $type_lastmod = null;
 		private $type_changefreq = null;
 
-		protected static $dsm = null;
+		//protected static $dsm = null;
 
 		public function __construct(Administration &$parent){
 			parent::__construct($parent);
@@ -50,7 +50,9 @@
 			}
 			
 			// build the document
-			// This is butt ugly but I needed some way of displaying the code in pre tags, hence the entities
+			// I know this is butt ugly, but I needed some way of building the document to work in <pre> tags, as it strips out
+			// any < or > unless they're entities... So i build this here and use ajax to load the page...
+			// If someone has a better idea please let me know!!!
 			$html  = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
 			$html .= '<urlset'."\n";
 			$html .= '  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'."\n";
@@ -70,7 +72,7 @@
 				}
 				// Display all other pages
 				if ($page['is_global'] == true && $page['is_home'] == false) {
-					$html .= "\n".'	<url>'."\n";
+					$html .= '	<url>'."\n";
 					$html .= '	  <loc>'.URL.$page['url'].'/</loc>'."\n";
 					$html .= '	  <lastmod>'.$this->type_lastmod[0].'</lastmod>'."\n";
 					$html .= '	  <changefreq>'.$this->type_changefreq[0].'</changefreq>'."\n";
@@ -149,12 +151,10 @@
 			// File path
 			$custom_file = getcwd() . '/sitemap.xml';
 			# Open the file and reset it, to recieve the new code
-			$open_file = fopen($custom_file, 'w');
-			// Replace html entities with ASCII 
-			//$valid_xml = str_replace('<', '<', str_replace('>', '>', $html));
-			
+			$open_file = fopen($custom_file, 'w');			
 			# Write xml to file, then close
 			fwrite($open_file, $html);
+			# Close the file
 			fclose($open_file);
 			
 			//stop the loading of Symphony core

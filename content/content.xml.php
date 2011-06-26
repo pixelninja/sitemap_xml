@@ -4,9 +4,6 @@
 	require_once(TOOLKIT . '/class.datasourcemanager.php');
 	
 	Class ContentExtensionSitemap_XmlXml extends AdministrationPage{
-
-		//protected $_data = array();
-		//protected $_id_role = 0;
 		
 		public function view() {	
 			$pages = Symphony::Database()->fetch("SELECT p.* FROM `tbl_pages` AS p ORDER BY p.sortorder ASC");
@@ -14,7 +11,6 @@
 
 			$this->setPageType('index');
 			$this->setTitle(__('Sitemap XML Generator'));
-			//$this->appendSubheading(__('Sitemap XML Generator'), '<a class="raw" href="'.URL.'/symphony/extension/sitemap_xml/raw/" rel="source">View raw</a>');
 
 			$h2 = new XMLElement('h2', __('Sitemap XML'));
 			$h2->appendChild(new XMLElement('span', __('Generator')));
@@ -77,10 +73,23 @@
 			
 			$label = Widget::Label(__('Datasource:'));
 			$label->appendChild(Widget::Select('pin[datasource]', $datasources));
+			if(isset($_REQUEST['action']['pin'])){
+				$datasource = $_REQUEST['pin']['datasource'];
+				if($datasource == '') {
+					$label = Widget::wrapFormElementWithError($label, 'This field is required');
+				}
+			}
 			$group->appendChild($label);
+
 			
 			$label = Widget::Label(__('Page'));
 			$label->appendChild(Widget::Select('pin[page]', $page_list));
+			if(isset($_REQUEST['action']['pin'])){
+				$page = $_REQUEST['pin']['page'];
+				if($page == '') {
+					$label = Widget::wrapFormElementWithError($label, 'This field is required');
+				}
+			}
 			$group->appendChild($label);
 			$fieldset->appendChild($group);
 			
@@ -91,6 +100,12 @@
 			
 			$label = Widget::Label(__('Relative URL'));
 			$label->appendChild(Widget::Input('pin[relative_url]', '/'));
+			if(isset($_REQUEST['action']['pin'])){
+				$relative_url = $_REQUEST['pin']['relative_url'];
+				if($relative_url == null) {
+					$label = Widget::wrapFormElementWithError($label, 'This field is required');
+				}
+			}
 			$group->appendChild($label);
 			
 			$help = new XMLElement('p', 'For example: if the page was News, the relative url might be /{news-title/@handle}/{@id}/. This would output '.URL.'/news/random-article/32/', array('class' => 'help'));
@@ -164,6 +179,14 @@
 				$datasource = $_REQUEST['pin']['datasource'];
 				$relative_url = $_REQUEST['pin']['relative_url'];
 				
+				if($page == null || $datasource == null || $relative_url == null) {
+					Administration::instance()->Page->pageAlert(
+						__('ERROR: Please fill out all fields.'),
+						Alert::ERROR
+					);
+					return;
+				}
+
 				try {
 					Symphony::Database()->query('
 						INSERT INTO tbl_sitemap_xml VALUES ("", "'.$page.'", "'.$datasource.'", "'.$relative_url.'")
@@ -193,15 +216,18 @@
 			if(isset($_REQUEST['action']['removeRow'])){
 				$item_id = $_REQUEST['row'];
 				
+				if($item_id == null) {
+					Administration::instance()->Page->pageAlert(
+						__('ERROR: You must select at least one entry.'),
+						Alert::ERROR
+					);
+					return;
+				}
+				
 				try {
 					foreach($item_id as $id) {
 						Symphony::Database()->query('DELETE FROM tbl_sitemap_xml WHERE id=' .$id );
 					}
-
-					//header("Location: ".URL."/symphony/extension/sitemap_xml/xml/success/");
-
-					//$this->_id_role = $this->_driver->saveData($item_id);
-					//$this->_data = $this->_driver->getData($this->_id_role);
 					
 					Administration::instance()->Page->pageAlert(
 						__('Entry successfully deleted.'),
