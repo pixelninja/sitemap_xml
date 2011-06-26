@@ -15,7 +15,6 @@
 			$h2 = new XMLElement('h2', __('Sitemap XML'));
 			$h2->appendChild(new XMLElement('span', __('Generator')));
 
-			/* sitemap output */
 			$fieldset = new XMLElement('fieldset', null, array('class'=>'primary'));
 			$pre = new XMLElement('pre');
 
@@ -44,12 +43,11 @@
 
 			$fieldset->appendChild($pre);
 			$this->Form->appendChild($fieldset);
-			/* end */
 
 			/* Pin DS to Page */
 			$fieldset = new XMLElement('fieldset', null, array('class'=>'secondary'));
 			$fieldset->appendChild(new XMLElement('h3', __('Pin datasource to page')));
-
+			// List datasources
 			$dsm = new DatasourceManager(Administration::instance());
 			$datasources = array('');
 			foreach($dsm->listAll() as $ds) {
@@ -59,7 +57,7 @@
 									$ds['name']
 								 );
 			}
-			
+			// List pages
 			$page_list = array('');
 			foreach($pages as $page) {
 				$page_list[] = array(

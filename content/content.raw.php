@@ -72,7 +72,7 @@
 				}
 				// Display all other pages
 				if ($page['is_global'] == true && $page['is_home'] == false) {
-					$html .= '	<url>'."\n";
+					$html .= "\n".'	<url>'."\n";
 					$html .= '	  <loc>'.URL.$page['url'].'/</loc>'."\n";
 					$html .= '	  <lastmod>'.$this->type_lastmod[0].'</lastmod>'."\n";
 					$html .= '	  <changefreq>'.$this->type_changefreq[0].'</changefreq>'."\n";

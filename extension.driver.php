@@ -56,7 +56,7 @@
 					`datasource_handle` VARCHAR(255) DEFAULT NULL,
 					`relative_url` VARCHAR(255) DEFAULT NULL,
 					PRIMARY KEY (`id`),
-					UNIQUE KEY datasource_handle_page_id_relative_url (`datasource_handle`, `page_id`, `relative_url`)
+					UNIQUE KEY datasource_handle_page_id_relative_url (`datasource_handle`(75), `page_id`, `relative_url`(75))
 				) ENGINE=MyISAM
 			');
 			
