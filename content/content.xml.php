@@ -4,6 +4,9 @@
 	require_once(TOOLKIT . '/class.datasourcemanager.php');
 	
 	Class ContentExtensionSitemap_XmlXml extends AdministrationPage{
+
+		//protected $_data = array();
+		//protected $_id_role = 0;
 		
 		public function view() {	
 			$pages = Symphony::Database()->fetch("SELECT p.* FROM `tbl_pages` AS p ORDER BY p.sortorder ASC");
@@ -152,9 +155,9 @@
 			}
 			/* end */
 			
+		}
 			
-			
-						
+		public function action() {
 			/*@group mysql query on Pin submit*/
 			if(isset($_REQUEST['action']['pin'])){
 				$page = $_REQUEST['pin']['page'];
@@ -196,6 +199,9 @@
 					}
 
 					//header("Location: ".URL."/symphony/extension/sitemap_xml/xml/success/");
+
+					//$this->_id_role = $this->_driver->saveData($item_id);
+					//$this->_data = $this->_driver->getData($this->_id_role);
 					
 					Administration::instance()->Page->pageAlert(
 						__('Entry successfully deleted.'),
