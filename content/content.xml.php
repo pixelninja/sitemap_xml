@@ -7,7 +7,7 @@
 		
 		public function view() {	
 			$pages = Symphony::Database()->fetch("SELECT p.* FROM `tbl_pages` AS p ORDER BY p.sortorder ASC");
-			$sitemap_entries = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml`");
+			$sitemap_entries = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml` ORDER BY `page_id` ASC");
 
 			$this->setPageType('index');
 			$this->setTitle(__('Sitemap XML Generator'));
@@ -26,17 +26,17 @@
 			$h2->appendChild(new XMLElement('a', 'Ping Google', array(
 															'href'=>'http://www.google.com/webmasters/sitemaps/ping?sitemap='.URL.'/sitemap.xml',      
 															'class'=>'google',  
-															'rel'=>'external'    
+															'rel'=>'ping'    
 														)));
 			$h2->appendChild(new XMLElement('a', 'Ping Bing', array(
 															'href'=>'http://www.bing.com/webmaster/ping.aspx?siteMap='.URL.'/sitemap.xml',      
 															'class'=>'bing',  
-															'rel'=>'external'    
+															'rel'=>'ping'    
 														)));
 			$h2->appendChild(new XMLElement('a', 'Ping Yahoo', array(
 															'href'=>'http://search.yahooapis.com/SiteExplorerService/V1/updateNotification?appid=YahooDemo&url='.URL.'/sitemap.xml',      
 															'class'=>'yahoo',  
-															'rel'=>'external'    
+															'rel'=>'ping'    
 														)));
 
 			$this->Contents->appendChild($h2);
@@ -60,10 +60,17 @@
 			// List pages
 			$page_list = array('');
 			foreach($pages as $page) {
+				$parent = '';
+
+				if($page['parent'] != null) {
+					$parent_title = Symphony::Database()->fetch("SELECT title FROM `tbl_pages` WHERE id = ".$page['parent']);
+					$parent = $parent_title[0]['title'].': ';
+				}
+
 				$page_list[] = array(
 									$page['id'],
 									null,
-									$page['title']
+									$parent.$page['title']
 								);
 			}
 			
@@ -134,11 +141,16 @@
 						
 				if(!empty($sitemap_entries)) {
 					foreach($sitemap_entries as $entry) {
-						$related_page = Symphony::Database()->fetch("SELECT title FROM `tbl_pages` WHERE id=" . $entry['page_id']);
+						$related_page = Symphony::Database()->fetch("SELECT id,parent,title FROM `tbl_pages` WHERE id=" . $entry['page_id']);
+						$parent_title = '';
+						if($related_page[0]['parent'] != null) {
+							$parent_title = Symphony::Database()->fetch("SELECT title FROM `tbl_pages` WHERE id = ".$related_page[0]['parent']);
+							$parent_title = $parent_title[0]['title'].': ';
+						}
 							
 						$ds = Widget::TableData(ucfirst(str_replace('_', ' ', $entry['datasource_handle'])));
 						$ds->appendChild(Widget::Input("row[".$entry['id']."]", $entry['id'], 'checkbox', array('id' => 'item')));
-						$page = Widget::TableData($related_page[0]['title']);
+						$page = Widget::TableData($parent_title.$related_page[0]['title']);
 						$url = Widget::TableData($entry['relative_url']);
 							
 						$tableBody[] = Widget::TableRow(

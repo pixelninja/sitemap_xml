@@ -7,7 +7,7 @@ jQuery(function($){
 	    window.open("view-source:" + $(this).attr('href'));
 	    return false;
 	})
-	$('a[rel=external]').live("click", function () {
+	$('a[rel=ping]').live("click", function () {
 	    window.open($(this).attr('href'));
 	    return false;
 	})
