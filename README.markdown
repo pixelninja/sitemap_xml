@@ -1,8 +1,8 @@
 # Sitemap XML
 
-- Version: 2.1
+- Version: 2.1.1
 - Author: Phill Gray
-- Build Date: 2011-06-27
+- Build Date: 2011-07-08
 - Requirements: Symphony 2.2.1
 
 ## Installation

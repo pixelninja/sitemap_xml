@@ -5,8 +5,8 @@
 		public function about(){
 			return array(
 				'name' => 'Sitemap XML',
-				'version' => '2.1',
-				'release-date' => '2011-06-10',
+				'version' => '2.1.1',
+				'release-date' => '2011-07-08',
 				'author' => array(
 				 		'name' => 'Phill Gray',
 						'email' => 'phill@randb.com.au'
