@@ -92,54 +92,60 @@
 					
 					$params = array();
 					foreach($datasources as $datasource) {
-						if($datasource['page_id'] == $page['id']) {
-							$ds = $dsm->create($datasource['datasource_handle'], $params);
-							$results = $ds->grab($params);
-	
-							if($results instanceof XMLElement) {
-								$xml = $results->generate(true);
-								$doc = DOMDocument::loadXML($xml);
-								
-								$xpath = new DOMXPath($doc);
-								
-								$expression = $datasource['relative_url'];
-								$page_url = URL . $page['url'];
-								$priority = number_format($page['priority'] - '0.20', 2, '.', ',');
-								$replacements = array();
-								
-								foreach($xpath->query('//entry') as $entry) {
-									preg_match_all('/\{[^\}]+\}/', $expression, $matches);
+						try{
+							if($datasource['page_id'] == $page['id']) {
+								$ds = $dsm->create($datasource['datasource_handle'], $params);
+								$results = $ds->grab($params);
+		
+								if($results instanceof XMLElement) {
+									$xml = $results->generate(true);
+									$doc = DOMDocument::loadXML($xml);
 									
-									foreach($matches[0] as $match) {
-										$result = $xpath->evaluate('string(' . trim($match, '{}') . ')', $entry);
+									$xpath = new DOMXPath($doc);
+									
+									$expression = $datasource['relative_url'];
+									$page_url = URL . $page['url'];
+									$priority = number_format($page['priority'] - '0.20', 2, '.', ',');
+									$replacements = array();
+									
+									foreach($xpath->query('//entry') as $entry) {
+										preg_match_all('/\{[^\}]+\}/', $expression, $matches);
 										
-										if(!is_null($result)) {
-											$replacements[$match] = trim($result);
-										}else{
-											$replacements[$match] = '';
+										foreach($matches[0] as $match) {
+											$result = $xpath->evaluate('string(' . trim($match, '{}') . ')', $entry);
+											
+											if(!is_null($result)) {
+												$replacements[$match] = trim($result);
+											}else{
+												$replacements[$match] = '';
+											}
 										}
-									}
-									$value = str_replace(array_keys($replacements),array_values($replacements),$expression);
+										$value = str_replace(array_keys($replacements),array_values($replacements),$expression);
+											
+										if(substr($value, 0, 1) != '/') {
+											$value = '/'.$value;
+										}
+										if(substr($value, -1) != '/') {
+											$value = $value.'/';
+										}
 										
-									if(substr($value, 0, 1) != '/') {
-										$value = '/'.$value;
+										$url = $page_url . $value;
+										
+										$html .= "\n".'	<url>'."\n";
+										$html .= '	  <loc>'.$url.'</loc>'."\n";
+										$html .= '	  <lastmod>'.$this->type_lastmod[0].'</lastmod>'."\n";
+										$html .= '	  <changefreq>'.$this->type_changefreq[0].'</changefreq>'."\n";
+										
+										$html .= '	  <priority>'.$priority.'</priority>'."\n";
+										$html .= '	</url>';
 									}
-									if(substr($value, -1) != '/') {
-										$value = $value.'/';
-									}
 									
-									$url = $page_url . $value;
-									
-									$html .= "\n".'	<url>'."\n";
-									$html .= '	  <loc>'.$url.'</loc>'."\n";
-									$html .= '	  <lastmod>'.$this->type_lastmod[0].'</lastmod>'."\n";
-									$html .= '	  <changefreq>'.$this->type_changefreq[0].'</changefreq>'."\n";
-									
-									$html .= '	  <priority>'.$priority.'</priority>'."\n";
-									$html .= '	</url>';
 								}
-								
 							}
+						} catch (Exception $e) {
+							$html = 'Error: '.$e->getMessage();
+							echo $html;
+							die;
 						}
 					}
 				}

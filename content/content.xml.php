@@ -18,22 +18,22 @@
 			$fieldset = new XMLElement('fieldset', null, array('class'=>'primary'));
 			$pre = new XMLElement('pre');
 
-			$h2->appendChild(new XMLElement('a', 'View raw', array(
+			$h2->appendChild(new XMLElement('a', __('View raw'), array(
 															'href'=>URL.'/symphony/extension/sitemap_xml/raw/',      
 															'class'=>'raw',   
 															'rel'=>'source'  
 														)));
-			$h2->appendChild(new XMLElement('a', 'Ping Google', array(
+			$h2->appendChild(new XMLElement('a', __('Ping Google'), array(
 															'href'=>'http://www.google.com/webmasters/sitemaps/ping?sitemap='.URL.'/sitemap.xml',      
 															'class'=>'google',  
 															'rel'=>'ping'    
 														)));
-			$h2->appendChild(new XMLElement('a', 'Ping Bing', array(
+			$h2->appendChild(new XMLElement('a', __('Ping Bing'), array(
 															'href'=>'http://www.bing.com/webmaster/ping.aspx?siteMap='.URL.'/sitemap.xml',      
 															'class'=>'bing',  
 															'rel'=>'ping'    
 														)));
-			$h2->appendChild(new XMLElement('a', 'Ping Yahoo', array(
+			$h2->appendChild(new XMLElement('a', __('Ping Yahoo'), array(
 															'href'=>'http://search.yahooapis.com/SiteExplorerService/V1/updateNotification?appid=YahooDemo&url='.URL.'/sitemap.xml',      
 															'class'=>'yahoo',  
 															'rel'=>'ping'    
@@ -81,7 +81,7 @@
 			if(isset($_REQUEST['action']['pin'])){
 				$datasource = $_REQUEST['pin']['datasource'];
 				if($datasource == '') {
-					$label = Widget::wrapFormElementWithError($label, 'This field is required');
+					$label = Widget::wrapFormElementWithError($label, __('This field is required'));
 				}
 			}
 			$group->appendChild($label);
@@ -92,7 +92,7 @@
 			if(isset($_REQUEST['action']['pin'])){
 				$page = $_REQUEST['pin']['page'];
 				if($page == '') {
-					$label = Widget::wrapFormElementWithError($label, 'This field is required');
+					$label = Widget::wrapFormElementWithError($label, __('This field is required'));
 				}
 			}
 			$group->appendChild($label);
@@ -108,12 +108,12 @@
 			if(isset($_REQUEST['action']['pin'])){
 				$relative_url = $_REQUEST['pin']['relative_url'];
 				if($relative_url == null) {
-					$label = Widget::wrapFormElementWithError($label, 'This field is required');
+					$label = Widget::wrapFormElementWithError($label, __('This field is required'));
 				}
 			}
 			$group->appendChild($label);
 			
-			$help = new XMLElement('p', 'For example: if the page was News, the relative url might be /{news-title/@handle}/{@id}/. This would output '.URL.'/news/random-article/32/', array('class' => 'help'));
+			$help = new XMLElement('p', __('For example: if the page was News, the relative url might be /{news-title/@handle}/{@id}/. This would output '.URL.'/news/random-article/32/'), array('class' => 'help'));
 			$group->appendChild($help);
 			
 			$span->appendChild(new XMLElement('button', __('Pin datasource to page'), array_merge(array('name' => 'action[pin]', 'type' => 'submit'))));
@@ -206,8 +206,7 @@
 						__('Datasource successfully pinned to page.'),
 						Alert::SUCCESS
 					);
-				}
-				catch (Exception $e) {
+				} catch (Exception $e) {
 					if($e->getCode() == '0') { 
 						Administration::instance()->Page->pageAlert(
 							__('ERROR: That combination already exists. Try again.'),
@@ -243,8 +242,7 @@
 						__('Entry successfully deleted.'),
 						Alert::SUCCESS
 					);
-				}
-				catch (Exception $e) {
+				} catch (Exception $e) {
 					
 					Administration::instance()->Page->pageAlert(
 						__('Exception caught: ',  $e->getMessage()),
