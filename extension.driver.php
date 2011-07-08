@@ -17,8 +17,8 @@
 		public function fetchNavigation() {
 			return array(
 				array(
-					'location' => 'Blueprints',
-					'name'	=> 'Sitemap XML',
+					'location' => __('Blueprints'),
+					'name'	=> __('Sitemap XML'),
 					'link'	=> '/xml/',
 				),
 			);
