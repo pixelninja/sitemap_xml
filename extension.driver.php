@@ -5,7 +5,7 @@
 		public function about(){
 			return array(
 				'name' => 'Sitemap XML',
-				'version' => '2.1.1',
+				'version' => '2.1.2',
 				'release-date' => '2011-07-08',
 				'author' => array(
 				 		'name' => 'Phill Gray',
@@ -17,7 +17,7 @@
 		public function fetchNavigation() {
 			return array(
 				array(
-					'location' => __('Blueprints'),
+					'location' => __('System'),
 					'name'	=> __('Sitemap XML'),
 					'link'	=> '/xml/',
 				),
@@ -29,7 +29,7 @@
 				array(
 					'page' => '/system/preferences/',
 					'delegate' => 'AddCustomPreferenceFieldsets',
-					'callback' => '__appendPreferences'
+					'callback' => 'appendPreferences'
 				),
 				array(
 					'page' => '/backend/',
@@ -82,7 +82,7 @@
 			}
 		}
 		
-		public function __appendPreferences($context) {
+		public function appendPreferences($context) {
 			$pages = Symphony::Database()->fetch("SELECT p.* FROM `tbl_pages` AS p ORDER BY p.sortorder ASC");
 			$sitemap_entries = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml`");
 		
