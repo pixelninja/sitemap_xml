@@ -3,7 +3,7 @@
 - Version: 2.1.2
 - Author: Phill Gray
 - Build Date: 2011-08-12
-- Requirements: Symphony 2.2.1
+- Requirements: Symphony 2.0.x
 
 ## Installation
 

@@ -74,11 +74,11 @@
 		}
 		
 		public function initaliseAdminPageHead($context) {
-			$callback = Symphony::Engine()->getPageCallback();
+			$callback = Administration::instance()->getPageCallback();
 			
 			if($callback['driver'] == 'xml') {
-				Symphony::Engine()->Page->addScriptToHead(URL . '/extensions/sitemap_xml/assets/sitemap_xml.publish.js', 10001);
-				Symphony::Engine()->Page->addStylesheetToHead(URL . '/extensions/sitemap_xml/assets/sitemap_xml.publish.css', 'screen');
+				Administration::instance()->Page->addScriptToHead(URL . '/extensions/sitemap_xml/assets/sitemap_xml.publish.js', 10001);
+				Administration::instance()->Page->addStylesheetToHead(URL . '/extensions/sitemap_xml/assets/sitemap_xml.publish.css', 'screen');
 			}
 		}
 		
