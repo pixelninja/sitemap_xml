@@ -13,35 +13,29 @@
 			$this->setPageType('index');
 			$this->setTitle(__('Sitemap XML Generator'));
 
-			$wrapper = $context['wrapper'];
-
 			$h2 = new XMLElement('h2', 'Sitemap XML');
 			$h2->appendChild(new XMLElement('span', 'Generator'));
 
 			$fieldset = new XMLElement('fieldset', null, array('class'=>'primary'));
 			$pre = new XMLElement('pre');
 
-//			$h2->appendChild(new XMLElement('a', 'View raw', array(
-//															'href'=>URL.'/symphony/extension/sitemap_xml/raw/',      
-//															'class'=>'raw',   
-//															'rel'=>'source'  
-//														)));
-//			$h2->appendChild(new XMLElement('a', 'Ping Google', array(
-//															'href'=>'http://www.google.com/webmasters/sitemaps/ping?sitemap='.URL.'/sitemap.xml',      
-//															'class'=>'google',  
-//															'rel'=>'ping'    
-//														)));
-//			$h2->appendChild(new XMLElement('a', 'Ping Bing', array(
-//															'href'=>'http://www.bing.com/webmaster/ping.aspx?siteMap='.URL.'/sitemap.xml',      
-//															'class'=>'bing',  
-//															'rel'=>'ping'    
-//														)));
-//			$h2->appendChild(new XMLElement('a', 'Ping Yahoo', array(
-//															'href'=>'http://search.yahooapis.com/SiteExplorerService/V1/updateNotification?appid=YahooDemo&url='.URL.'/sitemap.xml',      
-//															'class'=>'yahoo',  
-//															'rel'=>'ping'    
-//														)));
-//			$this->Contents->appendChild($h2);
+			$h2->appendChild(new XMLElement('a', 'View raw', array(
+															'href'=>URL.'/symphony/extension/sitemap_xml/raw/',      
+															'class'=>'raw',   
+															'rel'=>'source'  
+														)));
+			$h2->appendChild(new XMLElement('a', 'Ping Google', array(
+															'href'=>'http://www.google.com/webmasters/sitemaps/ping?sitemap='.URL.'/sitemap.xml',      
+															'class'=>'google',  
+															'rel'=>'ping'    
+														)));
+			$h2->appendChild(new XMLElement('a', 'Ping Bing', array(
+															'href'=>'http://www.bing.com/webmaster/ping.aspx?siteMap='.URL.'/sitemap.xml',      
+															'class'=>'bing',  
+															'rel'=>'ping'    
+														)));
+
+			$fieldset->appendChild($h2);
 
 			$fieldset->appendChild($pre);
 			$this->Form->appendChild($fieldset);

@@ -89,6 +89,7 @@
 				// Display associated entries from selected datasources
 				if (!empty($datasources)) {
 					$dsm = new DatasourceManager(Administration::instance());
+					$dsm = new DatasourceManager($this->_Parent);
 					
 					$params = array();
 					foreach($datasources as $datasource) {
@@ -96,7 +97,7 @@
 							if($datasource['page_id'] == $page['id']) {
 								$ds = $dsm->create($datasource['datasource_handle'], $params);
 								$results = $ds->grab($params);
-		
+											
 								if($results instanceof XMLElement) {
 									$xml = $results->generate(true);
 									$doc = DOMDocument::loadXML($xml);
