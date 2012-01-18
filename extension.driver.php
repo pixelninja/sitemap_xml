@@ -5,7 +5,7 @@
 		public function about(){
 			return array(
 				'name' => 'Sitemap XML',
-				'version' => '2.1.2',
+				'version' => '2.1.3',
 				'release-date' => '2011-07-08',
 				'author' => array(
 				 		'name' => 'Phill Gray',

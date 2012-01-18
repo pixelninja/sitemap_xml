@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension id="sitemap_xml" status="released" xmlns="http://symphony-cms.com/schemas/extension/1.0">
+	<name>Sitemap XML</name>
+	<description>Generate your sites sitemap.xml document easily</description>
+	<repo type="github">https://github.com/pixelninja/sitemap_xml</repo>
+	<url type="discuss">http://symphony-cms.com/discuss/thread/68690/</url>
+	<types />
+	<authors>
+		<author>
+			<name github="pixelninja" symphony="touchstone">Phillip Gray</name>
+			<website>http://www.touchstone-dev.co.nz</website>
+		</author>
+	</authors>
+	<releases>
+		<release version="2.1.2" date="2011-08-12" min="2.2.1" />
+	</releases>
+</extension>
