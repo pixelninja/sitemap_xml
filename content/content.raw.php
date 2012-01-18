@@ -25,7 +25,8 @@
 			// get values from config: remove spaces, remove any trailing commas and split into an array
 			$this->type_index = explode(',', trim(preg_replace('/ /', '', Symphony::Configuration()->get('index_type', 'sitemap_xml')), ','));
 			$this->type_global = explode(',', trim(preg_replace('/ /', '', Symphony::Configuration()->get('global', 'sitemap_xml')), ','));
-			$this->type_lastmod = explode(',', trim(preg_replace('/ /', '', Symphony::Configuration()->get('lastmod', 'sitemap_xml')), ','));
+			//$this->type_lastmod = explode(',', trim(preg_replace('/ /', '', Symphony::Configuration()->get('lastmod', 'sitemap_xml')), ','));
+			$this->type_lastmod = date('c', time());
 			$this->type_changefreq = explode(',', trim(preg_replace('/ /', '', Symphony::Configuration()->get('changefreq', 'sitemap_xml')), ','));			
 			
 			// supplement list of pages with additional meta data
@@ -65,7 +66,7 @@
 				if ($page['is_home'] == true) {
 					$html .= '	<url>'."\n";
 					$html .= '	  <loc>'.URL.$page['url'].'/</loc>'."\n";
-					$html .= '	  <lastmod>'.$this->type_lastmod[0].'</lastmod>'."\n";
+					$html .= '	  <lastmod>'.$this->type_lastmod.'</lastmod>'."\n";
 					$html .= '	  <changefreq>'.$this->type_changefreq[0].'</changefreq>'."\n";
 					$html .= '	  <priority>1.00</priority>'."\n";
 					$html .= '	</url>';
@@ -74,7 +75,7 @@
 				if ($page['is_global'] == true && $page['is_home'] == false) {
 					$html .= "\n".'	<url>'."\n";
 					$html .= '	  <loc>'.URL.$page['url'].'/</loc>'."\n";
-					$html .= '	  <lastmod>'.$this->type_lastmod[0].'</lastmod>'."\n";
+					$html .= '	  <lastmod>'.$this->type_lastmod.'</lastmod>'."\n";
 					$html .= '	  <changefreq>'.$this->type_changefreq[0].'</changefreq>'."\n";
 					
 					if($page['priority'] == '1.00') 	$html .= '	  <priority>1.00</priority>'."\n";
@@ -133,7 +134,7 @@
 										
 										$html .= "\n".'	<url>'."\n";
 										$html .= '	  <loc>'.$url.'</loc>'."\n";
-										$html .= '	  <lastmod>'.$this->type_lastmod[0].'</lastmod>'."\n";
+										$html .= '	  <lastmod>'.$this->type_lastmod.'</lastmod>'."\n";
 										$html .= '	  <changefreq>'.$this->type_changefreq[0].'</changefreq>'."\n";
 										
 										$html .= '	  <priority>'.$priority.'</priority>'."\n";

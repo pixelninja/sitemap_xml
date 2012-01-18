@@ -44,7 +44,6 @@
 			if (!Symphony::Configuration()->get('index_type', 'sitemap_xml')) {
 				Symphony::Configuration()->set('index_type', 'index', 'sitemap_xml');
 				Symphony::Configuration()->set('global', 'sitemap', 'sitemap_xml');
-				Symphony::Configuration()->set('lastmod', date('c', time()), 'sitemap_xml');
 				Symphony::Configuration()->set('changefreq', 'monthly', 'sitemap_xml');
 			}
 			
@@ -108,11 +107,6 @@
 			
 			/* group 2*/
 			$group = new XMLElement('div');
-			$group->setAttribute('class', 'group');
-			
-			$label = Widget::Label(__('Modification date of XML'));
-			$label->appendChild(Widget::Input('settings[sitemap_xml][lastmod]',General::Sanitize(Symphony::Configuration()->get('lastmod', 'sitemap_xml'))));
-			$group->appendChild($label);
 			
 			$label = Widget::Label(__('Change frequency of XML'));
 			$label->appendChild(Widget::Input('settings[sitemap_xml][changefreq]',General::Sanitize(Symphony::Configuration()->get('changefreq', 'sitemap_xml'))));

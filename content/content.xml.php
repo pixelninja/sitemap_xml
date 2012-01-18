@@ -34,11 +34,6 @@
 															'class'=>'bing',  
 															'rel'=>'ping'    
 														)));
-			$h2->appendChild(new XMLElement('a', __('Ping Yahoo'), array(
-															'href'=>'http://search.yahooapis.com/SiteExplorerService/V1/updateNotification?appid=YahooDemo&url='.URL.'/sitemap.xml',      
-															'class'=>'yahoo',  
-															'rel'=>'ping'    
-														)));
 
 			$this->Contents->appendChild($h2);
 
