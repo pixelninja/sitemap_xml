@@ -9,13 +9,6 @@
 		private $type_global = null;
 		private $type_lastmod = null;
 		private $type_changefreq = null;
-
-		//protected static $dsm = null;
-
-//		public function __construct(Administration &$parent){
-//			parent::__construct($parent);
-//		}
-		
 		
 		function view(){
 			// fetch all pages
@@ -25,7 +18,6 @@
 			// get values from config: remove spaces, remove any trailing commas and split into an array
 			$this->type_index = explode(',', trim(preg_replace('/ /', '', Symphony::Configuration()->get('index_type', 'sitemap_xml')), ','));
 			$this->type_global = explode(',', trim(preg_replace('/ /', '', Symphony::Configuration()->get('global', 'sitemap_xml')), ','));
-			//$this->type_lastmod = explode(',', trim(preg_replace('/ /', '', Symphony::Configuration()->get('lastmod', 'sitemap_xml')), ','));
 			$this->type_lastmod = date('c', time());
 			$this->type_changefreq = explode(',', trim(preg_replace('/ /', '', Symphony::Configuration()->get('changefreq', 'sitemap_xml')), ','));			
 			
@@ -62,7 +54,7 @@
 				// Display the home/index page
 				if ($page['is_home'] == true) {
 					$html .= '	<url>'."\n";
-					$html .= '	  <loc>'.URL.$page['url'].'/</loc>'."\n";
+					$html .= '	  <loc>'.URL.'/</loc>'."\n";
 					$html .= '	  <lastmod>'.$this->type_lastmod.'</lastmod>'."\n";
 					$html .= '	  <changefreq>'.$this->type_changefreq[0].'</changefreq>'."\n";
 					$html .= '	  <priority>1.00</priority>'."\n";
@@ -75,10 +67,7 @@
 					$html .= '	  <lastmod>'.$this->type_lastmod.'</lastmod>'."\n";
 					$html .= '	  <changefreq>'.$this->type_changefreq[0].'</changefreq>'."\n";
 					
-					if($page['priority'] == '1.00') 	$html .= '	  <priority>1.00</priority>'."\n";
-					elseif($page['priority'] == '0.50') $html .= '	  <priority>0.50</priority>'."\n";
-					elseif($page['priority'] == '0.10') $html .= '	  <priority>0.10</priority>'."\n";
-					elseif(is_numeric($page['priority'])) $html .= '	  <priority>'.$page['priority'].'</priority>'."\n";
+					if(is_numeric($page['priority'])) $html .= '	  <priority>'.$page['priority'].'</priority>'."\n";
 					else $html .= '	  <priority>0.50</priority>'."\n";
 					
 					$html .= '	</url>';
@@ -103,7 +92,13 @@
 									
 									$expression = $datasource['relative_url'];
 									$page_url = URL . $page['url'];
-									$priority = number_format($page['priority'] - '0.20', 2, '.', ',');
+
+									if($page['priority'] == null) {
+										$priority = number_format('0.50', 2, '.', ',');
+									} else {
+										$priority = number_format($page['priority'] - '0.20', 2, '.', ',');
+									}
+									
 									$replacements = array();
 									
 									foreach($xpath->query('//entry') as $entry) {

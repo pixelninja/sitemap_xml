@@ -10,21 +10,22 @@
 			$sitemap_entries = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml` ORDER BY `page_id` ASC");
 			$user_type = Administration::instance()->Author->get('user_type');
 
-//			$this->setPageType('index');
 			$this->setTitle(__('Sitemap XML Generator'));
 
-			$h2 = new XMLElement('h2', __('Sitemap XML'));
-			$h2->appendChild(new XMLElement('span', __('Generator')));
+			$h2 = new XMLElement('h2', __('Sitemap XML Generator'));
 
 			$fieldset = new XMLElement('fieldset', null, array('class'=>'primary column'));
 			$pre = new XMLElement('pre');
 
 			$actions = new XMLElement('div', null, array('class' => 'actions'));
-			$actions->appendChild(new XMLElement('a', __('View raw'), array(
-															'href'=>URL.'/sitemap.xml',      
-															'class'=>'button',   
-															'rel'=>'source'
-														)));
+			
+			if($user_type =='developer') {
+				$actions->appendChild(new XMLElement('a', __('View raw'), array(
+																'href'=>URL.'/sitemap.xml',      
+																'class'=>'button',   
+																'rel'=>'source'
+															)));
+			}
 			$actions->appendChild(new XMLElement('a', __('Ping Google'), array(
 															'href'=>'http://www.google.com/webmasters/sitemaps/ping?sitemap='.URL.'/sitemap.xml',      
 															'class'=>'button',
@@ -41,9 +42,11 @@
 
 			$fieldset->appendChild($pre);
 			$this->Form->appendChild($fieldset);
-			$this->Form->setAttribute('class', 'two columns');
+			$this->Form->setAttribute('class', 'columns');
 			
 			if($user_type =='developer') {
+				$this->Form->setAttribute('class', 'two columns');
+			
 				/* Pin DS to Page */
 				$fieldset = new XMLElement('fieldset', null, array('class'=>'secondary column'));
 				$fieldset->appendChild(new XMLElement('h3', __('Pin datasource to page')));
