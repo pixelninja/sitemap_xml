@@ -10,39 +10,42 @@
 			$sitemap_entries = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml` ORDER BY `page_id` ASC");
 			$user_type = Administration::instance()->Author->get('user_type');
 
-			$this->setPageType('index');
+//			$this->setPageType('index');
 			$this->setTitle(__('Sitemap XML Generator'));
 
 			$h2 = new XMLElement('h2', __('Sitemap XML'));
 			$h2->appendChild(new XMLElement('span', __('Generator')));
 
-			$fieldset = new XMLElement('fieldset', null, array('class'=>'primary'));
+			$fieldset = new XMLElement('fieldset', null, array('class'=>'primary column'));
 			$pre = new XMLElement('pre');
 
-			$h2->appendChild(new XMLElement('a', __('View raw'), array(
-															'href'=>URL.'/symphony/extension/sitemap_xml/raw/',      
-															'class'=>'raw',   
-															'rel'=>'source'  
+			$actions = new XMLElement('div', null, array('class' => 'actions'));
+			$actions->appendChild(new XMLElement('a', __('View raw'), array(
+															'href'=>URL.'/sitemap.xml',      
+															'class'=>'button',   
+															'rel'=>'source'
 														)));
-			$h2->appendChild(new XMLElement('a', __('Ping Google'), array(
+			$actions->appendChild(new XMLElement('a', __('Ping Google'), array(
 															'href'=>'http://www.google.com/webmasters/sitemaps/ping?sitemap='.URL.'/sitemap.xml',      
-															'class'=>'google',  
-															'rel'=>'ping'    
+															'class'=>'button',
+															'rel'=>'ping'
 														)));
-			$h2->appendChild(new XMLElement('a', __('Ping Bing'), array(
+			$actions->appendChild(new XMLElement('a', __('Ping Bing'), array(
 															'href'=>'http://www.bing.com/webmaster/ping.aspx?siteMap='.URL.'/sitemap.xml',      
-															'class'=>'bing',  
-															'rel'=>'ping'    
+															'class'=>'button',
+															'rel'=>'ping'
 														)));
 
-			$this->Contents->appendChild($h2);
+			$this->Context->appendChild($h2);
+			$this->Context->appendChild($actions);
 
 			$fieldset->appendChild($pre);
 			$this->Form->appendChild($fieldset);
+			$this->Form->setAttribute('class', 'two columns');
 			
 			if($user_type =='developer') {
 				/* Pin DS to Page */
-				$fieldset = new XMLElement('fieldset', null, array('class'=>'secondary'));
+				$fieldset = new XMLElement('fieldset', null, array('class'=>'secondary column'));
 				$fieldset->appendChild(new XMLElement('h3', __('Pin datasource to page')));
 				// List datasources
 				$dsm = new DatasourceManager(Administration::instance());
@@ -123,7 +126,7 @@
 				/* id entries exist, display linked DS/pages */
 				if($sitemap_entries != null) {
 					
-					$fieldset = new XMLElement('fieldset', null, array('class'=>'secondary'));
+					$fieldset = new XMLElement('fieldset', null, array('class'=>'secondary column'));
 					$fieldset->appendChild(new XMLElement('h3', __('Current pinned datasources')));
 					$group = new XMLElement('div');
 						

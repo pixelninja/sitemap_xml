@@ -12,9 +12,9 @@
 
 		//protected static $dsm = null;
 
-		public function __construct(Administration &$parent){
-			parent::__construct($parent);
-		}
+//		public function __construct(Administration &$parent){
+//			parent::__construct($parent);
+//		}
 		
 		
 		function view(){
@@ -33,7 +33,7 @@
 			foreach($pages as $page) {
 				$page_types = Symphony::Database()->fetchCol('type', "SELECT `type` FROM `tbl_pages_types` WHERE page_id = '".$page['id']."' ORDER BY `type` ASC");
 				
-				$page['url'] = '/' . Administration::instance()->resolvePagePath($page['id']);
+				$page['url'] = '/' . PageManager::resolvePagePath($page['id']);
 				$page['types'] = $page_types;
 				
 				$page['is_home'] = (count(array_intersect($page['types'], $this->type_index))) ? true : false;				
@@ -55,10 +55,7 @@
 			// any < or > unless they're entities... So i build this here and use ajax to load the page...
 			// If someone has a better idea please let me know!!!
 			$html  = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
-			$html .= '<urlset'."\n";
-			$html .= '  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'."\n";
-			$html .= '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'."\n";
-			$html .= '  xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">'."\n\n";
+			$html .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n\n";
 						
 			// iterate over each page
 			foreach($this->_pages as $page) {

@@ -2,18 +2,6 @@
 
 	Class extension_sitemap_xml extends Extension{
 	
-		public function about(){
-			return array(
-				'name' => 'Sitemap XML',
-				'version' => '2.1.3',
-				'release-date' => '2011-07-08',
-				'author' => array(
-				 		'name' => 'Phill Gray',
-						'email' => 'phill@randb.com.au'
-					)
-		 		);
-		}
-		
 		public function fetchNavigation() {
 			return array(
 				array(
@@ -34,7 +22,7 @@
 				array(
 					'page' => '/backend/',
 					'delegate' => 'InitaliseAdminPageHead',
-					'callback' => 'initaliseAdminPageHead'
+					'callback' => 'appendPageHead'
 				)
 			);
 		}
@@ -56,7 +44,7 @@
 					`relative_url` VARCHAR(255) DEFAULT NULL,
 					PRIMARY KEY (`id`),
 					UNIQUE KEY datasource_handle_page_id_relative_url (`datasource_handle`(75), `page_id`, `relative_url`(75))
-				) ENGINE=MyISAM
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 			');
 			
 			// Autogenerate a blank sitemap.xml
@@ -72,12 +60,12 @@
 			return Administration::instance()->saveConfig();
 		}
 		
-		public function initaliseAdminPageHead($context) {
-			$callback = Symphony::Engine()->getPageCallback();
+		public function appendPageHead($context) {
+			$callback = Administration::instance()->getPageCallback();
 			
 			if($callback['driver'] == 'xml') {
-				Symphony::Engine()->Page->addScriptToHead(URL . '/extensions/sitemap_xml/assets/sitemap_xml.publish.js', 10001);
-				Symphony::Engine()->Page->addStylesheetToHead(URL . '/extensions/sitemap_xml/assets/sitemap_xml.publish.css', 'screen');
+				Administration::instance()->Page->addScriptToHead(URL . '/extensions/sitemap_xml/assets/sitemap_xml.publish.js', 10001);
+				Administration::instance()->Page->addStylesheetToHead(URL . '/extensions/sitemap_xml/assets/sitemap_xml.publish.css', 'screen');
 			}
 		}
 		
@@ -91,29 +79,31 @@
 			$fieldset->appendChild(new XMLElement('legend', __('Sitemap XML')));
 			$context['wrapper']->appendChild($fieldset);
 			
-			/* group 1*/
-			$group = new XMLElement('div');
-			$group->setAttribute('class', 'group');
+			/* column 1*/
+			$column = new XMLElement('div');
+			$column->setAttribute('class', 'two columns');
 			
 			$label = Widget::Label(__('Home page type'));
+			$label->setAttribute('class', 'column');
 			$label->appendChild(Widget::Input('settings[sitemap_xml][index_type]', General::Sanitize(Symphony::Configuration()->get('index_type', 'sitemap_xml'))));
-			$group->appendChild($label);
+			$column->appendChild($label);
 			
 			$label = Widget::Label(__('Global page type'));
+			$label->setAttribute('class', 'column');
 			$label->appendChild(Widget::Input('settings[sitemap_xml][global]',General::Sanitize(Symphony::Configuration()->get('global', 'sitemap_xml'))));
-			$group->appendChild($label);
+			$column->appendChild($label);
 			
-			$fieldset->appendChild($group);
+			$fieldset->appendChild($column);
 			
-			/* group 2*/
-			$group = new XMLElement('div');
+			/* column 2*/
+			$column = new XMLElement('div');
 			
 			$label = Widget::Label(__('Change frequency of XML'));
 			$label->appendChild(Widget::Input('settings[sitemap_xml][changefreq]',General::Sanitize(Symphony::Configuration()->get('changefreq', 'sitemap_xml'))));
-			$group->appendChild($label);
+			$column->appendChild($label);
 
-			$fieldset->appendChild($group);
-			/*@group end*/
+			$fieldset->appendChild($column);
+			/*@column end*/
 		}
 	}
 

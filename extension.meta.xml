@@ -4,14 +4,17 @@
 	<description>Generate your sites sitemap.xml document easily</description>
 	<repo type="github">https://github.com/pixelninja/sitemap_xml</repo>
 	<url type="discuss">http://symphony-cms.com/discuss/thread/68690/</url>
-	<types />
+	<types>
+		<type>Workflow</type>
+	</types>
 	<authors>
 		<author>
 			<name github="pixelninja" symphony="touchstone">Phillip Gray</name>
-			<website>http://www.touchstone-dev.co.nz</website>
+			<email>pixel.ninjad@gmail.com</email>
 		</author>
 	</authors>
 	<releases>
+		<release version="2.2" date="2012-06-13" min="2.3" />
 		<release version="2.1.2" date="2011-08-12" min="2.2.1" />
 	</releases>
 </extension>

@@ -1,9 +1,9 @@
 # Sitemap XML
 
-- Version: 2.1.3
+- Version: 2.2
 - Author: Phill Gray
-- Build Date: 2011-08-12
-- Requirements: Symphony 2.2.x
+- Build Date: 2012-06-13
+- Requirements: Symphony 2.3
 
 ## Installation
 
@@ -31,7 +31,7 @@ The priority options are:
 
 The index/home page will automatically be set to 1.00, and at this stage cannot be changed (unless done manually).
 
-You can also specify the modification date and change frequency in the System > Preferences page. These are set as the current date/time at installation and "monthly" respectively.
+You can also specify the change frequency in the System > Preferences page. It is set as "monthly" by default.
 
 ## Usage
 
