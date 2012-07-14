@@ -91,7 +91,12 @@
 									$xpath = new DOMXPath($doc);
 									
 									$expression = $datasource['relative_url'];
-									$page_url = URL . $page['url'];
+
+									if ($page['is_home'] == true) {
+										$page_url = URL;
+									} else {
+										$page_url = URL . $page['url'];
+									}
 
 									if($page['priority'] == null) {
 										$priority = number_format('0.50', 2, '.', ',');
