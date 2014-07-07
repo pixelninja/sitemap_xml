@@ -153,13 +153,7 @@
 			echo $html;
 			
 			// File path
-			$custom_file = getcwd() . '/sitemap.xml';
-			# Open the file and reset it, to recieve the new code
-			$open_file = fopen($custom_file, 'w');			
-			# Write xml to file, then close
-			fwrite($open_file, $html);
-			# Close the file
-			fclose($open_file);
+			General::writeFile(getcwd() . '/sitemap.xml', $html);
 			
 			//stop the loading of Symphony core
 			die;

@@ -84,7 +84,7 @@
 				if(isset($_REQUEST['action']['pin'])){
 					$datasource = $_REQUEST['pin']['datasource'];
 					if($datasource == '') {
-						$label = Widget::wrapFormElementWithError($label, __('This field is required'));
+						$label = Widget::Error($label, __('This field is required'));
 					}
 				}
 				$group->appendChild($label);
@@ -95,7 +95,7 @@
 				if(isset($_REQUEST['action']['pin'])){
 					$page = $_REQUEST['pin']['page'];
 					if($page == '') {
-						$label = Widget::wrapFormElementWithError($label, __('This field is required'));
+						$label = Widget::Error($label, __('This field is required'));
 					}
 				}
 				$group->appendChild($label);
@@ -111,7 +111,7 @@
 				if(isset($_REQUEST['action']['pin'])){
 					$relative_url = $_REQUEST['pin']['relative_url'];
 					if($relative_url == null) {
-						$label = Widget::wrapFormElementWithError($label, __('This field is required'));
+						$label = Widget::Error($label, __('This field is required'));
 					}
 				}
 				$group->appendChild($label);
@@ -135,6 +135,7 @@
 						
 					$table = new XMLElement('table');
 					$table->setAttribute('class', 'selectable');
+					$table->setAttribute('data-interactive', 'data-interactive');
 					$tableBody = array();
 					$tableHead = array(
 						array(__('Datasource'), 'col'),
@@ -201,9 +202,13 @@
 				}
 
 				try {
-					Symphony::Database()->query('
-						INSERT INTO tbl_sitemap_xml VALUES ("", "'.$page.'", "'.$datasource.'", "'.$relative_url.'")
-					');
+					Symphony::Database()->query(sprintf('
+						INSERT INTO tbl_sitemap_xml VALUES (null, %d, "%s", "%s")
+					',
+						$page,
+						$datasource,
+						$relative_url
+					));
 					
 					Administration::instance()->Page->pageAlert(
 						__('Datasource successfully pinned to page.'),
@@ -238,7 +243,7 @@
 				
 				try {
 					foreach($item_id as $id) {
-						Symphony::Database()->query('DELETE FROM tbl_sitemap_xml WHERE id=' .$id );
+						Symphony::Database()->query(sprintf('DELETE FROM tbl_sitemap_xml WHERE id=%d', $id));
 					}
 					
 					Administration::instance()->Page->pageAlert(

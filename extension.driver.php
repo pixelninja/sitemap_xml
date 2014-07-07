@@ -48,16 +48,15 @@
 			');
 			
 			// Autogenerate a blank sitemap.xml
-			$fp = fopen(getcwd() . '/sitemap.xml', 'w+');
-			fclose($fp);
+			General::writeFile(getcwd() . '/sitemap.xml', '');
 			
-			return Administration::instance()->saveConfig();
+			return Symphony::Configuration()->write();
 		}
 		
 		public function uninstall() {
 			Symphony::Configuration()->remove('sitemap_xml');
 			Symphony::Database()->query('DROP TABLE IF EXISTS tbl_sitemap_xml');
-			return Administration::instance()->saveConfig();
+			return Symphony::Configuration()->write();
 		}
 		
 		public function appendPageHead($context) {
@@ -70,7 +69,6 @@
 		}
 		
 		public function appendPreferences($context) {
-			$pages = Symphony::Database()->fetch("SELECT p.* FROM `tbl_pages` AS p ORDER BY p.sortorder ASC");
 			$sitemap_entries = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml`");
 		
 			/*@group Fieldset containing config settings*/
