@@ -1,13 +1,8 @@
 # Sitemap XML
 
-- Version: 2.2
-- Author: Phill Gray
-- Build Date: 2012-06-22
-- Requirements: Symphony 2.3
-
 ## Installation
 
-- Upload the 'sitemap_xml' folder to your Symphony 'extensions' folder.
+- Upload the `/sitemap_xml` folder to your Symphony `/extensions` folder.
 - Enable it by selecting "Sitemap XML", choose Enable from the with-selected menu, then click Apply.
 
 ## Configuration
@@ -18,7 +13,7 @@ By default it assumes the index/home page will have the type "index" and global 
 
 If you use a different convention in your Page Type field then you can change these in the System > Preferences page.
 
-**It is recommended to use the [Page Type Tool extension](http://symphony-cms.com/download/extensions/view/72108/). This will make adding page types to multiple pages a lot easier.**
+**It is recommended to use the [Page Type Tool extension](http://getsymphony.com/download/extensions/view/72108/). This will make adding page types to multiple pages a lot easier.**
 
 Also needed for correct output is the priority of each page, which is added to the pages Page Type field. By default it will return `<priority>0.5</priority>`.
 
