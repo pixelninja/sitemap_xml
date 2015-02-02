@@ -8,7 +8,7 @@
 		public function view() {	
 			$pages = Symphony::Database()->fetch("SELECT p.* FROM `tbl_pages` AS p ORDER BY p.sortorder ASC");
 			$sitemap_entries = Symphony::Database()->fetch("SELECT * FROM `tbl_sitemap_xml` ORDER BY `page_id` ASC");
-			$user_type = Administration::instance()->Author->get('user_type');
+			$user_type = Symphony::Author()->get('user_type');
 
 			$this->setTitle(__('Sitemap XML Generator'));
 
