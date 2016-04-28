@@ -33,15 +33,16 @@
 				Symphony::Configuration()->set('index_type', 'index', 'sitemap_xml');
 				Symphony::Configuration()->set('global', 'sitemap', 'sitemap_xml');
 				Symphony::Configuration()->set('changefreq', 'monthly', 'sitemap_xml');
+                Symphony::Configuration()->write();
 			}
 			
-			// Add table to database 
+			// Add table to database
 			Symphony::Database()->query('
 				CREATE TABLE IF NOT EXISTS tbl_sitemap_xml (
-					`id` INT(4) UNSIGNED DEFAULT NULL AUTO_INCREMENT,
-					`page_id` INT(4) UNSIGNED DEFAULT NULL,
-					`datasource_handle` VARCHAR(255) DEFAULT NULL,
-					`relative_url` VARCHAR(255) DEFAULT NULL,
+					`id` INT(11) unsigned NOT NULL auto_increment,
+					`page_id` INT(4) unsigned DEFAULT NULL,
+					`datasource_handle` varchar(255) DEFAULT NULL,
+					`relative_url` varchar(255) DEFAULT NULL,
 					PRIMARY KEY (`id`),
 					UNIQUE KEY datasource_handle_page_id_relative_url (`datasource_handle`(75), `page_id`, `relative_url`(75))
 				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
@@ -50,7 +51,7 @@
 			// Autogenerate a blank sitemap.xml
 			General::writeFile(getcwd() . '/sitemap.xml', '');
 			
-			return Symphony::Configuration()->write();
+			return true;
 		}
 		
 		public function uninstall() {
