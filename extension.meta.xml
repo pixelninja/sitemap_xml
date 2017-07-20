@@ -15,7 +15,7 @@
 		</author>
 	</authors>
 	<releases>
-		<release version="2.6" date="2017-07-15" min="2.6">
+		<release version="2.6" date="2017-07-15" min="2.6" max="2.7">
 			- Use `file_put_contents` to write to the file
 		</release>
 		<release version="2.5" date="2015-02-02" min="2.6" />
